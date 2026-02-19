@@ -14,21 +14,21 @@ const CITY_LOGOS = {
   ferreacup: encodeLogoPath("/logoCities/ferreacup.png"),
 };
 
-const cityNavItems = (localleagues || []).map(({ slug, name }) => {
-  const normalizedSlug = (slug || "").toLowerCase();
-  return {
-    name: name || slug,
-    href: slug ? `/competitions/${slug}` : "/",
-    slug: normalizedSlug,
-    logoSrc: CITY_LOGOS[normalizedSlug] || DEFAULT_NAV_LOGO,
-  };
-});
+// const cityNavItems = (localleagues || []).map(({ slug, name }) => {
+//   const normalizedSlug = (slug || "").toLowerCase();
+//   return {
+//     name: name || slug,
+//     href: slug ? `/competitions/${slug}` : "/",
+//     slug: normalizedSlug,
+//     logoSrc: CITY_LOGOS[normalizedSlug] || DEFAULT_NAV_LOGO,
+//   };
+// });
 
-const defaultCities = [
-  { name: "LSC", href: "/", slug: "esl", logoSrc: CITY_LOGOS.esl },
-  ...cityNavItems,
-  { name: "", href: "", slug: "spacer", logoSrc: "" },
-];
+// const defaultCities = [
+//   { name: "LSC", href: "/", slug: "esl", logoSrc: CITY_LOGOS.esl },
+//   ...cityNavItems,
+//   { name: "", href: "", slug: "spacer", logoSrc: "" },
+// ];
 
 const SECTION_LINKS = [
   { name: "Home", href: "/" },
@@ -38,7 +38,7 @@ const SECTION_LINKS = [
   { name: "", href: ""} //elemento vuoto per spacing
 ];
 
-export function useCitiesNav(pathname) {
+export function useCitiesNav(pathname, defaultCities) {
   const [cities, setCities] = useState(defaultCities);
   const [mounted, setMounted] = useState(false);
   const [sectionLinks, setSectionLinks] = useState(SECTION_LINKS);
