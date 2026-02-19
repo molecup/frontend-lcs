@@ -32,6 +32,9 @@ export const dynamicParams = true;
 
 export async function generateStaticParams() {
     const leagues = await getLeagueBySlug();
+    if (!leagues || leagues.length === 0) {
+        return [];
+    }
     return leagues.map(league => ({ city: league.slug }));
     // return Object.keys(leaguesBySlug).map((city) => ({ city }));
 }
@@ -59,7 +62,7 @@ export default async function CityPage({ params }) {
 
     const blogPosts = getSortedPostsData(city);
     const hasBlog = blogPosts.length > 0;
-    const backgroundImage = getBackgroundForCity(key);
+    const backgroundImage = data.background || '/backgroundCities/milano.png';
 
     return (
         <div className={styles.cityPage}>

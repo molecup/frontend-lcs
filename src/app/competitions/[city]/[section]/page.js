@@ -244,7 +244,7 @@ export default async function SectionPage({ params }) {
     }
 
     const sectionContainerClass = `city-section city-${sectionKey}`;
-    const backgroundImage = getBackgroundForCity(slug);
+    const backgroundImage = league.background || "/backgroundCities/milano.png";
 
     return (
         <div className="city-page">
