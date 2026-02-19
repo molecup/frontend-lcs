@@ -16,7 +16,7 @@ export default async function Nav() {
       };
     });
     const defaultCities = [
-    { name: "LSC", href: "/", slug: "esl", logoSrc: DEFAULT_NAV_LOGO },
+    { name: "LCS", href: "/", slug: "esl", logoSrc: DEFAULT_NAV_LOGO },
     ...cityNavItems,
     { name: "", href: "", slug: "spacer", logoSrc: "" },
   ];
