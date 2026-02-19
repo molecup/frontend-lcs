@@ -1,41 +1,45 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { localleagues, matches } from '@/data/CorrectDataStructure';
+// import { localleagues, matches } from '@/data/CorrectDataStructure';
 import { eslMatches } from '@/data/eslData';
 import LiveMatchTimeline from '@/components/LiveMatchTimeline';
 import styles from './match.module.css';
+import { getLeagueBySlug, getMatchesByLeagueSlug, getMatchById } from '@/lib/queries';
 
 const MATCH_DURATION = 50;
 const MATCH_CENTER_SLUG = 'partite';
 const MATCH_CENTER_LEAGUE = { slug: MATCH_CENTER_SLUG, title: 'LCS Match Center', name: 'Match Center Nazionale' };
 
-const allLeagues = [...localleagues, MATCH_CENTER_LEAGUE];
+// const allLeagues = [...localleagues, MATCH_CENTER_LEAGUE];
 
-const leaguesBySlug = allLeagues.reduce((acc, league) => {
-    acc[league.slug.toLowerCase()] = league;
-    return acc;
-}, {});
+// const leaguesBySlug = allLeagues.reduce((acc, league) => {
+//     acc[league.slug.toLowerCase()] = league;
+//     return acc;
+// }, {});
 
-const matchesByLeague = matches.reduce((acc, match) => {
-    const slugs = new Set(
-        (match?.teams || [])
-            .map(({ team }) => team?.local_league?.toLowerCase?.())
-            .filter(Boolean)
-    );
-    slugs.forEach((slug) => {
-        if (!acc[slug]) acc[slug] = [];
-        acc[slug].push(match);
-    });
-    return acc;
-}, {});
+// const matchesByLeague = matches.reduce((acc, match) => {
+//     const slugs = new Set(
+//         (match?.teams || [])
+//             .map(({ team }) => team?.local_league?.toLowerCase?.())
+//             .filter(Boolean)
+//     );
+//     slugs.forEach((slug) => {
+//         if (!acc[slug]) acc[slug] = [];
+//         acc[slug].push(match);
+//     });
+//     return acc;
+// }, {});
 
-matchesByLeague[MATCH_CENTER_SLUG] = eslMatches || [];
+// matchesByLeague[MATCH_CENTER_SLUG] = eslMatches || [];
 
-const getMatchesForLeague = (slug) => matchesByLeague[slug?.toLowerCase?.()] || [];
+// // const getMatchesForLeague = (slug) => matchesByLeague[slug?.toLowerCase?.()] || [];
+// const getMatchesForLeague = async (slug) => { return await getMatchesByLeagueSlug(slug) }
 
-const findMatchForLeague = (slug, matchId) =>
-    getMatchesForLeague(slug).find((match) => String(match.id) === String(matchId));
+// const findMatchForLeague = async (slug, matchId) => {
+//     const leagueMatches = await getMatchesForLeague(slug);
+//     return leagueMatches.find((match) => String(match.id) === String(matchId));
+// };
 
 const getMatchStartTimestamp = (match) => {
     if (!match?.date) return null;
@@ -148,8 +152,9 @@ const buildMatchView = (match, nowTs) => {
 };
 
 export async function generateStaticParams() {
-    const leagueParams = localleagues.flatMap((league) =>
-        getMatchesForLeague(league.slug).map((match) => ({ city: league.slug, matchId: String(match.id) }))
+    const localleagues = await getLeagueBySlug();
+    const leagueParams = localleagues.flatMap(async (league) =>
+        (await getMatchesByLeagueSlug(league.slug)).map((match) => ({ city: league.slug, matchId: String(match.id) }))
     );
     const matchCenterParams = (eslMatches || []).map((match) => ({ city: MATCH_CENTER_SLUG, matchId: String(match.id) }));
     return [...leagueParams, ...matchCenterParams];
@@ -159,8 +164,8 @@ export async function generateMetadata({ params }) {
     const resolvedParams = await params;
     const { city, matchId } = resolvedParams;
     const key = city?.toLowerCase?.();
-    const league = leaguesBySlug[key];
-    const match = league ? findMatchForLeague(league.slug, matchId) : null;
+    const league = await getLeagueBySlug(key);
+    const match = league ? await getMatchById(matchId) : null;
     if (!league || !match) {
         return { title: 'Partita non trovata' };
     }
@@ -177,10 +182,10 @@ export default async function MatchDetailPage({ params }) {
     const resolvedParams = await params;
     const { city, matchId } = resolvedParams;
     const key = city?.toLowerCase?.();
-    const league = leaguesBySlug[key];
+    const league = await getLeagueBySlug(key);
     if (!league) notFound();
 
-    const rawMatch = findMatchForLeague(league.slug, matchId);
+    const rawMatch = await getMatchById(matchId);
     if (!rawMatch) notFound();
 
     const nowTs = Date.now();

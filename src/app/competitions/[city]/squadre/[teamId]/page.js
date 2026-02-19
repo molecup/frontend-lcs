@@ -1,50 +1,43 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { localleagues, teams as apiTeams, players as apiPlayers } from '@/data/CorrectDataStructure';
+// import { localleagues, teams as apiTeams, players as apiPlayers } from '@/data/CorrectDataStructure';
 import AnimatedTitle from '@/components/AnimatedTitle';
 import styles from './team.module.css';
+import { getTeamBySlug, getLeagueBySlug } from '@/lib/queries';
 
 const TEAM_LOGO_FALLBACK = '/logoCities/lcsw.png';
 
 const normalizeSlug = (value = '') => value.toString().trim().toLowerCase();
 
-const findLeagueBySlug = (slug) => localleagues.find((league) => league.slug === slug);
+// const findLeagueBySlug = (slug) => localleagues.find((league) => league.slug === slug);
 
-const findCombinedTeam = (leagueSlug, teamSlug) => {
-    const league = findLeagueBySlug(leagueSlug);
+const findCombinedTeam = async (leagueSlug, teamSlug) => {
+    const league = await getLeagueBySlug(leagueSlug);
     if (!league) return { league: null, team: null };
 
-    const leagueTeam = league.teams?.find((team) => team.slug === teamSlug);
-    const apiTeam = apiTeams.find((team) => team.slug === teamSlug && team.local_league === leagueSlug);
-    if (!leagueTeam && !apiTeam) {
+    const team = await getTeamBySlug(teamSlug);
+
+    if (!team) return { league, team: null };
+
+    if (!team.name) {
         return { league, team: null };
     }
 
-    const combinedTeam = {
-        slug: teamSlug,
-        ...apiTeam,
-        ...leagueTeam
-    };
-
-    if (!combinedTeam.name) {
-        return { league, team: null };
-    }
-
-    return { league, team: combinedTeam };
+    return { league, team: team };
 };
 
-const getPlayersForTeam = (teamSlug) => {
-    const inlineRoster = apiTeams.find((team) => team.slug === teamSlug)?.players;
-    if (Array.isArray(inlineRoster) && inlineRoster.length) {
-        return inlineRoster;
-    }
-    return apiPlayers.filter((player) => player.team === teamSlug);
-};
+// const getPlayersForTeam = (teamSlug) => {
+//     const inlineRoster = apiTeams.find((team) => team.slug === teamSlug)?.players;
+//     if (Array.isArray(inlineRoster) && inlineRoster.length) {
+//         return inlineRoster;
+//     }
+//     return apiPlayers.filter((player) => player.team === teamSlug);
+// };
 
-const buildRoster = (teamSlug) => getPlayersForTeam(teamSlug).map((player, index) => {
+const buildRoster = (team) => team.players.map((player, index) => {
     const fullName = player.name || [player.first_name, player.last_name].filter(Boolean).join(' ').trim();
     return {
-        id: player.id ?? `${teamSlug}-player-${index + 1}`,
+        id: player.id ?? `${team.slug}-player-${index + 1}`,
         number: player.shirt_number ?? player.number ?? '-'
             ,
         role: player.position ?? player.role ?? 'Giocatore',
@@ -54,7 +47,8 @@ const buildRoster = (teamSlug) => getPlayersForTeam(teamSlug).map((player, index
 }).filter((player) => Boolean(player.name));
 
 export async function generateStaticParams() {
-    return localleagues.flatMap((league) => (
+    const leagues = await getLeagueBySlug();
+    return leagues.flatMap((league) => (
         Array.isArray(league.teams)
             ? league.teams.map((team) => ({ city: league.slug, teamId: team.slug }))
             : []
@@ -79,11 +73,11 @@ export default async function TeamPage({ params }) {
     const { city, teamId } = params;
     const citySlug = normalizeSlug(city);
     const teamSlug = normalizeSlug(teamId);
-    const { league, team } = findCombinedTeam(citySlug, teamSlug);
+    const { league, team } = await findCombinedTeam(citySlug, teamSlug);
 
     if (!league || !team) notFound();
 
-    const roster = buildRoster(team.slug);
+    const roster = buildRoster(team);
     const staff = Array.isArray(team.staff) ? team.staff : [];
 
     const pills = [

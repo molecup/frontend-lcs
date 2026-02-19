@@ -1,6 +1,6 @@
 // javascript
 import { notFound, redirect } from 'next/navigation';
-import { localleagues, matches as allMatches } from '@/data/CorrectDataStructure';
+// import { localleagues, matches as allMatches } from '@/data/CorrectDataStructure';
 import AnimatedTitle from '@/components/AnimatedTitle';
 import TeamsRoster from '@/components/TeamsRoster';
 import MatchesSlider from '@/components/MatchesSlider';
@@ -9,6 +9,7 @@ import AnimatedSectionTitle from '@/components/AnimatedSectionTitle';
 import Standings from '@/components/Standings';
 import NewsSection from '@/components/NewsSection';
 import "./section.css";
+import { getLeagueBySlug, getMatchesByLeagueSlug } from '@/lib/queries';
 
 const DEFAULT_LOGO = '/logoCities/lcsw.png';
 const MATCH_DURATION = 50;
@@ -26,10 +27,10 @@ const cityBackgrounds = {
 
 const getBackgroundForCity = (slug) => cityBackgrounds[slug?.toLowerCase()] || '/backgroundCities/milano.png';
 
-const leaguesBySlug = localleagues.reduce((acc, league) => {
-    if (league?.slug) acc[league.slug.toLowerCase()] = league;
-    return acc;
-}, {});
+// const leaguesBySlug = localleagues.reduce((acc, league) => {
+//     if (league?.slug) acc[league.slug.toLowerCase()] = league;
+//     return acc;
+// }, {});
 
 const normalizeEventType = (type = '') => {
     switch (type.toUpperCase()) {
@@ -59,27 +60,28 @@ const formatScore = (home, away, scoreText) => {
 };
 
 const rawMatchesCache = new Map();
-const getRawMatchesForLeague = (slug) => {
+const getRawMatchesForLeague = async (slug) => {
     const key = slug?.toLowerCase?.() ?? slug;
     if (rawMatchesCache.has(key)) return rawMatchesCache.get(key);
 
-    const filtered = toArray(allMatches)
-        .filter((match) =>
-            toArray(match.teams).some(
-                (teamMatch) => (teamMatch?.team?.local_league ?? '').toLowerCase() === key
-            )
-        );
+    const matches = toArray(await getMatchesByLeagueSlug(key));
+    // const filtered = toArray(matches)
+        // .filter((match) =>
+        //     toArray(match.teams).some(
+        //         (teamMatch) => (teamMatch?.team?.local_league ?? '').toLowerCase() === key
+        //     )
+        // );
 
-    rawMatchesCache.set(key, filtered);
-    return filtered;
+    rawMatchesCache.set(key, matches);
+    return matches;
 };
 
 const matchesCache = new Map();
-const getMatchesForLeague = (slug) => {
+const getMatchesForLeague = async (slug) => {
     const key = slug?.toLowerCase?.() ?? slug;
     if (matchesCache.has(key)) return matchesCache.get(key);
 
-    const mapped = getRawMatchesForLeague(key)
+    const mapped = (await getRawMatchesForLeague(key))
         .map((match) => {
             const teams = toArray(match.teams);
             const homeEntry = teams.find((entry) => entry.is_home);
@@ -145,17 +147,18 @@ const buildGroupsForLeague = (league) => {
     ];
 };
 
-const leagueSections = (league, slug) => {
+const leagueSections = (league, matches) => {
     const sections = new Set(['home']);
     if (mapTeamsForRoster(league).length) sections.add('squadre');
-    if (getMatchesForLeague(slug).length) sections.add('partite');
+    if (matches.length) sections.add('partite');
     if (buildGroupsForLeague(league).length) sections.add('classifica');
     if (toArray(league.news).length) sections.add('notizie');
     return sections;
 };
 
 export async function generateStaticParams() {
-    return localleagues.flatMap((league) => {
+    const localLeagues = await getLeagueBySlug();
+    return localLeagues.flatMap((league) => {
         const slug = league.slug?.toLowerCase();
         if (!slug) return [];
         return Array.from(leagueSections(league, slug)).map((section) => ({ city: slug, section }));
@@ -164,7 +167,8 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
     const { city, section } = await params;
-    const league = leaguesBySlug[city.toLowerCase()];
+    // const league = leaguesBySlug[city.toLowerCase()];
+    const league = await getLeagueBySlug(city.toLowerCase());
     const sectionKey = section?.toLowerCase?.() ?? '';
     const baseTitle = league?.name || league?.title || 'Competitions';
     const title = sectionKey === 'home' || !sectionKey
@@ -176,11 +180,14 @@ export async function generateMetadata({ params }) {
 export default async function SectionPage({ params }) {
     const { city, section } = await params;
     const slug = city.toLowerCase();
-    const league = leaguesBySlug[slug];
+    // const league = leaguesBySlug[slug];
+    const league = await getLeagueBySlug(city.toLowerCase());
     if (!league) notFound();
+    const matches = await getMatchesForLeague(slug);
+    const rawMatches = await getRawMatchesForLeague(slug);
 
     const sectionKey = section?.toLowerCase?.() ?? '';
-    const availableSections = leagueSections(league, slug);
+    const availableSections = leagueSections(league, matches);
     if (!availableSections.has(sectionKey)) notFound();
 
     if (sectionKey === 'home') {
@@ -188,10 +195,11 @@ export default async function SectionPage({ params }) {
     }
 
     const teams = mapTeamsForRoster(league);
-    const matches = getMatchesForLeague(slug);
-    const rawMatches = getRawMatchesForLeague(slug);
     const groups = buildGroupsForLeague(league);
     const news = toArray(league.news);
+
+    console.log(city, section, slug);
+    console.log(matchesCache);
 
     const nowTs = Date.now();
     const liveMatch = matches.find((m) => {

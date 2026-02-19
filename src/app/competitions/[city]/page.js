@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { localleagues } from '@/data/CorrectDataStructure';
+// import { localleagues } from '@/data/CorrectDataStructure';
 import AnimatedTitle from '@/components/AnimatedTitle';
 import CityScrollNews from '@/components/CityScrollNews';
 import BlogSlider from '@/components/BlogSlider';
@@ -9,11 +9,12 @@ import SocialLinks from '@/components/SocialLinks';
 import StaffSection from '@/components/StaffSection';
 import { getSortedPostsData } from '@/lib/blog';
 import styles from './city.module.css';
+import {getLeagueBySlug} from '@/lib/queries';
 
-const leaguesBySlug = localleagues.reduce((acc, league) => {
-    if (league?.slug) acc[league.slug.toLowerCase()] = league;
-    return acc;
-}, {});
+// const leaguesBySlug = localleagues.reduce((acc, league) => {
+//     if (league?.slug) acc[league.slug.toLowerCase()] = league;
+//     return acc;
+// }, {});
 
 const cityBackgrounds = {
     boracup: '/backgroundCities/boracup.jpg',
@@ -29,14 +30,16 @@ const getBackgroundForCity = (slug) => cityBackgrounds[slug?.toLowerCase()] || '
 
 export const dynamicParams = true;
 
-export function generateStaticParams() {
-    return Object.keys(leaguesBySlug).map((city) => ({ city }));
+export async function generateStaticParams() {
+    const leagues = await getLeagueBySlug();
+    return leagues.map(league => ({ city: league.slug }));
+    // return Object.keys(leaguesBySlug).map((city) => ({ city }));
 }
 
 export async function generateMetadata({ params }) {
     const { city } = await params;
     const key = city.toLowerCase();
-    const data = leaguesBySlug[key];
+    const data = await getLeagueBySlug(key);
     const title = data?.name || data?.title || 'Competitions';
     return { title };
 }
@@ -44,7 +47,7 @@ export async function generateMetadata({ params }) {
 export default async function CityPage({ params }) {
     const { city } = await params;
     const key = city.toLowerCase();
-    const data = leaguesBySlug[key];
+    const data = await getLeagueBySlug(key);
     if (!data) notFound();
 
     const news = Array.isArray(data.news) ? data.news : [];

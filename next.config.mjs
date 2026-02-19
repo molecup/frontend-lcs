@@ -6,6 +6,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'django-backend-lcs-storage.s3.amazonaws.com',
+      },
     ],
   },
 };

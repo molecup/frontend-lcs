@@ -2,6 +2,7 @@ import Link from 'next/link';
 // Sostituisce il vecchio import di cities con la nuova struttura dati
 import { localleagues, matches as allMatches } from '@/data/CorrectDataStructure';
 import styles from './competitions.module.css';
+import { getLeagueBySlug, getMatchesByLeagueSlug } from '@/lib/queries';
 
 const formatHighlights = [
     {
@@ -39,10 +40,10 @@ const isScheduledMatch = (match) => {
     return dt > new Date();
 };
 
-export default function CompetitionsIndex() {
+export default async function CompetitionsIndex() {
     // Le "città" corrispondono alle leghe locali
-    const leagues = toArray(localleagues);
-    const matches = toArray(allMatches);
+    const leagues = await getLeagueBySlug();
+    const matches = await getMatchesByLeagueSlug(); // Ottieni tutti i match per tutte le leghe
 
     const totals = leagues.reduce(
         (acc, league) => {

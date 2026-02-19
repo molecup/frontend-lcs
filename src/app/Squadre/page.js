@@ -1,9 +1,12 @@
 import Link from "next/link";
-import { localleagues } from "@/data/CorrectDataStructure";
+// import { localleagues } from "@/data/CorrectDataStructure";
 import "./Squadre.css";
+import { getLeagueBySlug } from "@/lib/queries";
 
-export default function Squadre() {
-    const totalCities = localleagues.length;
+export default async function Squadre() {
+    const localLeagues = await getLeagueBySlug();
+    const totalCities = localLeagues.length;
+    const totalTeams = localLeagues.reduce((acc, league) => acc + (Array.isArray(league.teams) ? league.teams.length : 0), 0);
 
     const formatSteps = [
         {
@@ -32,7 +35,7 @@ export default function Squadre() {
         }
     ];
 
-    const championSlots = localleagues.reduce((acc, league) => {
+    const championSlots = localLeagues.reduce((acc, league) => {
         const champion = league.teams?.[0];
         if (!champion) {
             return acc;
@@ -62,7 +65,7 @@ export default function Squadre() {
         {
             id: "teams",
             label: "Scuole in gara",
-            value: "32"
+            value: totalTeams
         },
         {
             id: "minutes",
@@ -71,7 +74,7 @@ export default function Squadre() {
         }
     ];
 
-    const totalSlots = localleagues.length;
+    const totalSlots = localLeagues.length;
     const needsPlayIn = totalSlots > 16;
     const entryRound = needsPlayIn ? "Sedicesimi di finale" : "Ottavi di finale";
 
