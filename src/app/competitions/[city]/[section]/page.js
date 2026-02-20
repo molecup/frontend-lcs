@@ -181,7 +181,7 @@ export default async function SectionPage({ params }) {
     const { city, section } = await params;
     const slug = city.toLowerCase();
     // const league = leaguesBySlug[slug];
-    const league = await getLeagueBySlug(city.toLowerCase());
+    const league = await getLeagueBySlug(slug);
     if (!league) notFound();
     const matches = await getMatchesForLeague(slug);
     const rawMatches = await getRawMatchesForLeague(slug);
@@ -197,9 +197,6 @@ export default async function SectionPage({ params }) {
     const teams = mapTeamsForRoster(league);
     const groups = buildGroupsForLeague(league);
     const news = toArray(league.news);
-
-    console.log(city, section, slug);
-    console.log(matchesCache);
 
     const nowTs = Date.now();
     const liveMatch = matches.find((m) => {
@@ -253,10 +250,12 @@ export default async function SectionPage({ params }) {
                     <AnimatedTitle text={league.name || league.title} />
                 </div>
             </div>
-
             <div className={sectionContainerClass}>
                 {sectionContent}
             </div>
         </div>
     );
 }
+
+
+
