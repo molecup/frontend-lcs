@@ -199,9 +199,9 @@ export default function MatchesSlider({ matches = [], citySlug }) {
             </div>
 
             <div className="score-wrap" aria-label="Risultato">
-              <span className="score">{m.score || '-'}</span>
+              <span className="score">{m.status !== "SCHEDULED" ? m.score || '-' : '-'}</span>
               {(finished ? 'FT' : m.status) && !liveNow && (
-                <span className="status">{finished ? 'FT' : m.status}</span>
+                <span className="status">{ m.status}</span>
               )}
             </div>
 

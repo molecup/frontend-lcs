@@ -1,6 +1,6 @@
 import Link from 'next/link';
 // Sostituisce il vecchio import di cities con la nuova struttura dati
-import { localleagues, matches as allMatches } from '@/data/CorrectDataStructure';
+// import { localleagues, matches as allMatches } from '@/data/CorrectDataStructure';
 import styles from './competitions.module.css';
 import { getLeagueBySlug, getMatchesByLeagueSlug } from '@/lib/queries';
 

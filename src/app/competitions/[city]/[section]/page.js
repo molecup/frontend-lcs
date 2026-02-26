@@ -10,54 +10,27 @@ import Standings from '@/components/Standings';
 import NewsSection from '@/components/NewsSection';
 import "./section.css";
 import { getLeagueBySlug, getMatchesByLeagueSlug } from '@/lib/queries';
+import {normalizeMatchData, findLiveMatch} from '@/lib/dataNormalization';
 
 const DEFAULT_LOGO = '/logoCities/lcsw.png';
-const MATCH_DURATION = 50;
 const toArray = (value) => (Array.isArray(value) ? value : []);
 
-const cityBackgrounds = {
-    boracup: '/backgroundCities/boracup.jpg',
-    ferreacup: '/backgroundCities/ferreacup.jpg',
-    leonessacup: '/backgroundCities/leonessacup.jpg',
-    milano: '/backgroundCities/milano.png',
-    molecup: '/backgroundCities/molecup.jpg',
-    olympiuscup: '/backgroundCities/olympiuscup.jpg',
-    turascup: '/backgroundCities/turascup.jpg',
-};
+// const cityBackgrounds = {
+//     boracup: '/backgroundCities/boracup.jpg',
+//     ferreacup: '/backgroundCities/ferreacup.jpg',
+//     leonessacup: '/backgroundCities/leonessacup.jpg',
+//     milano: '/backgroundCities/milano.png',
+//     molecup: '/backgroundCities/molecup.jpg',
+//     olympiuscup: '/backgroundCities/olympiuscup.jpg',
+//     turascup: '/backgroundCities/turascup.jpg',
+// };
 
-const getBackgroundForCity = (slug) => cityBackgrounds[slug?.toLowerCase()] || '/backgroundCities/milano.png';
+// const getBackgroundForCity = (slug) => cityBackgrounds[slug?.toLowerCase()] || '/backgroundCities/milano.png';
 
 // const leaguesBySlug = localleagues.reduce((acc, league) => {
 //     if (league?.slug) acc[league.slug.toLowerCase()] = league;
 //     return acc;
 // }, {});
-
-const normalizeEventType = (type = '') => {
-    switch (type.toUpperCase()) {
-        case 'GOAL':
-            return 'goal';
-        case 'YELLOW_CARD':
-            return 'yellow';
-        case 'RED_CARD':
-            return 'red';
-        default:
-            return type.toLowerCase();
-    }
-};
-
-const buildEvents = (teamMatch, fallbackName) =>
-    toArray(teamMatch?.events).map((event, idx) => ({
-        minute: event.minute ?? 0,
-        type: normalizeEventType(event.event_type || ''),
-        team: fallbackName,
-        player: event.player || `${fallbackName} #${idx + 1}`
-    }));
-
-const formatScore = (home, away, scoreText) => {
-    if (scoreText) return scoreText;
-    if (home?.score != null && away?.score != null) return `${home.score} - ${away.score}`;
-    return '-';
-};
 
 const rawMatchesCache = new Map();
 const getRawMatchesForLeague = async (slug) => {
@@ -76,39 +49,6 @@ const getRawMatchesForLeague = async (slug) => {
     return matches;
 };
 
-const matchesCache = new Map();
-const getMatchesForLeague = async (slug) => {
-    const key = slug?.toLowerCase?.() ?? slug;
-    if (matchesCache.has(key)) return matchesCache.get(key);
-
-    const mapped = (await getRawMatchesForLeague(key))
-        .map((match) => {
-            const teams = toArray(match.teams);
-            const homeEntry = teams.find((entry) => entry.is_home);
-            const awayEntry = teams.find((entry) => entry.is_home === false);
-            const homeName = homeEntry?.team?.name || homeEntry?.team?.short_name || 'Home';
-            const awayName = awayEntry?.team?.name || awayEntry?.team?.short_name || 'Away';
-            const start = match.datetime ? new Date(match.datetime).getTime() : null;
-            const now = Date.now();
-            const isLive = !match.finished && start !== null && now >= start && now <= start + MATCH_DURATION * 60000;
-            const status = match.finished ? 'FT' : isLive ? 'LIVE' : 'SCHEDULED';
-
-            return {
-                id: match.id,
-                date: match.datetime,
-                stage: match.stage || match.name || 'Match Day',
-                home: { name: homeName, logo: DEFAULT_LOGO },
-                away: { name: awayName, logo: DEFAULT_LOGO },
-                score: formatScore(homeEntry, awayEntry, match.score_text),
-                status,
-                isLive,
-                events: [...buildEvents(homeEntry, homeName), ...buildEvents(awayEntry, awayName)]
-            };
-        });
-
-    matchesCache.set(key, mapped);
-    return mapped;
-};
 
 const mapTeamsForRoster = (league) =>
     toArray(league?.teams).map((team, index) => ({
@@ -180,11 +120,10 @@ export async function generateMetadata({ params }) {
 export default async function SectionPage({ params }) {
     const { city, section } = await params;
     const slug = city.toLowerCase();
-    // const league = leaguesBySlug[slug];
     const league = await getLeagueBySlug(slug);
     if (!league) notFound();
-    const matches = await getMatchesForLeague(slug);
     const rawMatches = await getRawMatchesForLeague(slug);
+    const matches = rawMatches.map(normalizeMatchData);
 
     const sectionKey = section?.toLowerCase?.() ?? '';
     const availableSections = leagueSections(league, matches);
@@ -199,31 +138,26 @@ export default async function SectionPage({ params }) {
     const news = toArray(league.news);
 
     const nowTs = Date.now();
-    const liveMatch = matches.find((m) => {
-        const start = m?.date ? new Date(m.date).getTime() : null;
-        if (start === null) return false;
-        const diffMin = Math.floor((nowTs - start) / 60000);
-        return diffMin >= 0 && diffMin < MATCH_DURATION;
-    });
+    const liveMatch = findLiveMatch(matches);
 
-    const placeholderLiveMatch = {
-        id: 'nd',
-        status: 'ND',
-        stage: 'ND',
-        score: 'ND - ND',
-        events: [],
-        home: { name: 'ND' },
-        away: { name: 'ND' },
-        date: null
-    };
-    const timelineMatch = liveMatch || placeholderLiveMatch;
+    // const placeholderLiveMatch = {
+    //     id: 'nd',
+    //     status: 'ND',
+    //     stage: 'ND',
+    //     score: 'ND - ND',
+    //     events: [],
+    //     home: { name: 'ND' },
+    //     away: { name: 'ND' },
+    //     date: null
+    // };
+    // const timelineMatch = liveMatch || placeholderLiveMatch;
 
     const sectionContent = {
         squadre: teams.length ? <TeamsRoster teams={teams} citySlug={slug} /> : null,
         partite: matches.length ? (
             <>
                 <MatchesSlider matches={matches} citySlug={slug} />
-                <LiveMatchTimeline match={timelineMatch} />
+                {liveMatch && <LiveMatchTimeline match={liveMatch} />}
             </>
         ) : null,
         classifica: groups.length ? <Standings groups={groups} matches={rawMatches} /> : null,

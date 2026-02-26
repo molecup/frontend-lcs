@@ -7,9 +7,9 @@ import LocalPartners from '@/components/LocalPartners';
 import StadiumMap from '@/components/StadiumMap';
 import SocialLinks from '@/components/SocialLinks';
 import StaffSection from '@/components/StaffSection';
-import { getSortedPostsData } from '@/lib/blog';
+// import { getSortedPostsData } from '@/lib/blog';
 import styles from './city.module.css';
-import {getLeagueBySlug} from '@/lib/queries';
+import {getLeagueBySlug, getNewsByLeagueSlug} from '@/lib/queries';
 
 // const leaguesBySlug = localleagues.reduce((acc, league) => {
 //     if (league?.slug) acc[league.slug.toLowerCase()] = league;
@@ -60,7 +60,8 @@ export default async function CityPage({ params }) {
     const socials = data.socials || {};
     const staff = Array.isArray(data.staff) ? data.staff : [];
 
-    const blogPosts = getSortedPostsData(city);
+    // const blogPosts = getSortedPostsData(city);
+    const blogPosts = await getNewsByLeagueSlug(key);
     const hasBlog = blogPosts.length > 0;
     const backgroundImage = data.background || '/backgroundCities/milano.png';
 

@@ -6,8 +6,8 @@ import { eslMatches } from '@/data/eslData';
 import LiveMatchTimeline from '@/components/LiveMatchTimeline';
 import styles from './match.module.css';
 import { getLeagueBySlug, getMatchesByLeagueSlug, getMatchById } from '@/lib/queries';
+import { normalizeMatchData, formatDate, buildMatchView } from '@/lib/dataNormalization';
 
-const MATCH_DURATION = 50;
 const MATCH_CENTER_SLUG = 'partite';
 const MATCH_CENTER_LEAGUE = { slug: MATCH_CENTER_SLUG, title: 'LCS Match Center', name: 'Match Center Nazionale' };
 
@@ -41,115 +41,7 @@ const MATCH_CENTER_LEAGUE = { slug: MATCH_CENTER_SLUG, title: 'LCS Match Center'
 //     return leagueMatches.find((match) => String(match.id) === String(matchId));
 // };
 
-const getMatchStartTimestamp = (match) => {
-    if (!match?.date) return null;
-    const ts = new Date(match.date).getTime();
-    return Number.isFinite(ts) ? ts : null;
-};
 
-const deriveMatchStatus = (match, { isLive, finished }, nowTs) => {
-    if (isLive) return 'LIVE';
-    if (finished) return 'FINISHED';
-    const start = getMatchStartTimestamp(match);
-    if (start !== null && start > nowTs) return 'SCHEDULED';
-    return match.status || 'SCHEDULED';
-};
-
-const createEventList = (match) => {
-    if (Array.isArray(match?.teams) && match.teams.length) {
-        const events = match.teams.flatMap((teamEntry) => {
-            const teamName = teamEntry.team?.name || '';
-            return (teamEntry.events || []).map((event) => {
-                const minuteValue = typeof event.minute === 'number' ? event.minute : Number(event.minute);
-                return {
-                    minute: Number.isFinite(minuteValue) ? minuteValue : null,
-                    type: event.event_type || 'Evento',
-                    player: event.player || 'Giocatore sconosciuto',
-                    team: teamName
-                };
-            });
-        });
-        return events.sort((a, b) => (a.minute ?? Infinity) - (b.minute ?? Infinity));
-    }
-
-    if (Array.isArray(match?.events)) {
-        const events = match.events.map((event) => {
-            const minuteValue = typeof event.minute === 'number' ? event.minute : Number(event.minute);
-            return {
-                minute: Number.isFinite(minuteValue) ? minuteValue : null,
-                type: event.type || 'Evento',
-                player: event.player || 'Giocatore sconosciuto',
-                team: event.team || ''
-            };
-        });
-        return events.sort((a, b) => (a.minute ?? Infinity) - (b.minute ?? Infinity));
-    }
-
-    return [];
-};
-
-const normalizeMatchData = (match) => {
-    const entries = Array.isArray(match?.teams) ? match.teams : [];
-    const hasStructuredTeams = entries.length > 0;
-    const homeEntry = hasStructuredTeams ? (entries.find((team) => team.is_home) || entries[0] || null) : null;
-    const awayEntry = hasStructuredTeams ? (entries.find((team) => !team.is_home) || entries[1] || null) : null;
-
-    const fallbackHome = match.home || {};
-    const fallbackAway = match.away || {};
-
-    return {
-        id: String(match.id),
-        date: match.datetime || match.date || null,
-        stage: match.stage || match.name || '',
-        score: match.score_text || match.score || '-',
-        status: match.finished ? 'FINISHED' : match.status || 'SCHEDULED',
-        home: {
-            name: homeEntry?.team?.name || fallbackHome.name || 'Sconosciuta',
-            logo: homeEntry?.team?.logo || fallbackHome.logo || null
-        },
-        away: {
-            name: awayEntry?.team?.name || fallbackAway.name || 'Sconosciuta',
-            logo: awayEntry?.team?.logo || fallbackAway.logo || null
-        },
-        events: createEventList(match)
-    };
-};
-
-const formatDate = (dateStr) => {
-    if (!dateStr) return { shortDate: '', time: '' };
-    const date = new Date(dateStr);
-    return {
-        shortDate: date.toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' }),
-        time: date.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
-    };
-};
-
-const computeLiveState = (match) => {
-    if (!match?.date) return { isLive: false, finished: false, minute: null };
-    const start = new Date(match.date).getTime();
-    const now = Date.now();
-    const diffMin = Math.floor((now - start) / 60000);
-    const isLive = diffMin >= 0 && diffMin < MATCH_DURATION;
-    const finished = diffMin >= MATCH_DURATION;
-    return { isLive, finished, minute: isLive ? diffMin : null };
-};
-
-const buildMatchView = (match, nowTs) => {
-    const normalized = normalizeMatchData(match);
-    const liveState = computeLiveState(normalized);
-    const status = deriveMatchStatus(normalized, liveState, nowTs);
-    const matchStart = getMatchStartTimestamp(normalized);
-    const isUpcoming = status === 'SCHEDULED' && matchStart !== null && matchStart > nowTs;
-    const shouldHideScore = !liveState.isLive && !liveState.finished && (matchStart === null || nowTs < matchStart);
-
-    return {
-        ...normalized,
-        ...liveState,
-        status,
-        isUpcoming,
-        score: shouldHideScore ? '-' : normalized.score
-    };
-};
 
 export async function generateStaticParams() {
     const localleagues = await getLeagueBySlug();
