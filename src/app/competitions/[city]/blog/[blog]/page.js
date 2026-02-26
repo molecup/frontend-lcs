@@ -1,15 +1,22 @@
 import { getPostData } from '@/lib/blog';
 import { notFound } from 'next/navigation';
 import styles from './blog.module.css';
+import { getNewsBySlug } from '@/lib/queries';
+import { remark } from 'remark';
+import html from 'remark-html';
 
 export default async function BlogPostPage({ params }) {
     const resolvedParams = await params;
     const { city, blog: slug } = resolvedParams;
 
     try {
-        const postData = await getPostData(slug);
+        const postData = await getNewsBySlug(slug);
+        const processedContent = await remark()
+        .use(html)
+        .process(postData.content);
+        const contentHtml = processedContent.toString();
 
-        if (postData.city?.toLowerCase() !== city.toLowerCase()) {
+        if (postData.local_league?.toLowerCase() !== city.toLowerCase()) {
             notFound();
         }
 
@@ -26,7 +33,7 @@ export default async function BlogPostPage({ params }) {
                 <article className={styles.article}>
                     <header className={styles.hero}>
                         <div className={styles.heroContent}>
-                            <p className={styles.eyebrow}>{(postData.city ?? city).toUpperCase()}</p>
+                            <p className={styles.eyebrow}>{(postData.local_league ?? city).toUpperCase()}</p>
                             <h1 className={styles.title}>{postData.title}</h1>
                             {postData.subtitle && (
                                 <p className={styles.subtitle}>{postData.subtitle}</p>
@@ -62,7 +69,7 @@ export default async function BlogPostPage({ params }) {
                     <div className={styles.bodyCard}>
                         <div
                             className={styles.content}
-                            dangerouslySetInnerHTML={{ __html: postData.contentHtml }}
+                            dangerouslySetInnerHTML={{ __html: contentHtml }}
                         />
                     </div>
                 </article>

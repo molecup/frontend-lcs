@@ -1,5 +1,13 @@
 const API_URL_BASE = process.env.API_URL_BASE
 
+/*
+    * Helper functions to fetch data from the API
+    * Each function corresponds to a specific endpoint and handles the response
+    * Caching can be implemented here if needed in the future
+    * Error handling is included to log issues without breaking the app
+    * if no param is provided, it will fetch all items of that type (e.g., all leagues, all matches)
+*/
+
 export async function getLeagueBySlug(slug = null) {
     const slugComponent = slug? `${slug}/` : '';
     const response = await fetch(`${API_URL_BASE}/local-leagues/${slugComponent}`);
@@ -35,6 +43,26 @@ export async function getTeamBySlug(teamSlug = null) {
     const response = await fetch(`${API_URL_BASE}/teams/${slugComponent}`);
     if (!response.ok) {
         console.warn(`Failed to fetch team: ${response.status}`);
+        return null;
+    }
+    return await response.json();
+}
+
+export async function getNewsBySlug(slug = null) {
+    const slugComponent = slug ? `${slug}/` : '';
+    const response = await fetch(`${API_URL_BASE}/news/${slugComponent}`);
+    if (!response.ok) {
+        console.warn(`Failed to fetch news: ${response.status}`);
+        return null;
+    }
+    return await response.json();
+}
+
+export async function getNewsByLeagueSlug(leagueSlug = null) {
+    const filter = leagueSlug ? "?local-league=" + leagueSlug : "";
+    const response = await fetch(`${API_URL_BASE}/news/${filter}`);
+    if (!response.ok) {
+        console.warn(`Failed to fetch news by league: ${response.status}`);
         return null;
     }
     return await response.json();
