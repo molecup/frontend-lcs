@@ -3,9 +3,11 @@ import img from "../../public/eslHome/DSCF6614-Migliorato-NR.webp";
 import Image from "next/image";
 import Link from "next/link";
 import { FutbolIcon, TrophyIcon, StarIcon, PeopleGroupIcon, HandHoldingHeartIcon, HandHoldingDollarIcon } from "@/components/Icons";
+import { redirect } from "next/navigation";
 
 // Componenti above-the-fold caricati normalmente
 import HeroWithBackground from "@/components/HeroWithBackground";
+// import { redirect } from "next/dist/server/api-utils";
 
 // Lazy load dei componenti below-the-fold per ridurre il bundle iniziale
 const SectionReveal = dynamic(() => import("@/components/SectionReveal"), {
@@ -21,6 +23,7 @@ const TestimonialsReveal = dynamic(() => import("@/components/TestimonialsReveal
 });
 
 export default function Page() {
+    redirect("/competitions");
     return (
         <div className={"homeESL"}>
             <HeroWithBackground text="lega calcio studenti" />

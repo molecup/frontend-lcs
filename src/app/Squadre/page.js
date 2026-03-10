@@ -12,13 +12,13 @@ export default async function Squadre() {
         {
             id: "draft",
             title: "Draft cittadino",
-            description: "Ogni città seleziona 8 scuole tramite invito e ranking studentesco.",
+            description: "Ogni città seleziona un insieme di scuole tramite invito e ranking studentesco.",
             meta: "1 settimana di selezioni"
         },
         {
-            id: "gironi",
-            title: "Gironi bilanciati",
-            description: "Round robin da 4 squadre, 3 punti per la vittoria, differenza reti come tie-break.",
+            id: "roaster",
+            title: "Roaster a girone unico",
+            description: "Ogni squadra partecipa a un girone unico cittadino e gioca tre partite. Ogni partita assegna un massimo di 3 punti e determina la classifica finale.",
             meta: "3 giornate garantite"
         },
         {
@@ -36,7 +36,7 @@ export default async function Squadre() {
     ];
 
     const championSlots = localLeagues.reduce((acc, league) => {
-        const champion = league.teams?.[0];
+        const champion = league.teams?.champion || null;
         if (!champion) {
             return acc;
         }

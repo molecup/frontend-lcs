@@ -5,11 +5,20 @@ const __nowISO = __now.toISOString();
 const __past70ISO = new Date(__now.getTime() - 70 * 60000).toISOString();
 
 const teams = {  // per classifica
-    // manzoni: { id: "team-manzoni", name: "Liceo Manzoni", cityName: "Milano", logoCities: DEFAULT_TEAM_LOGO },
+    manzoni: { id: "team-manzoni", name: "Liceo Manzoni", cityName: "Milano", logoCities: DEFAULT_TEAM_LOGO },
+    alfieri: { id: "team-alfieri", name: "Liceo Alfieri", cityName: "Milano", logoCities: DEFAULT_TEAM_LOGO },
 };
 
 
 const eslData = [ // per classifica
+    // { FirstTeam: teams.manzoni, SecondTeam: teams.alfieri, WinnerTeam: teams.manzoni },
+    // { FirstTeam: teams.manzoni, SecondTeam: null, WinnerTeam: teams.manzoni },
+    // { FirstTeam: teams.manzoni, SecondTeam: null, WinnerTeam: teams.manzoni },
+    // { FirstTeam: teams.manzoni, SecondTeam: null, WinnerTeam: teams.manzoni },
+    // { FirstTeam: teams.manzoni, SecondTeam: null, WinnerTeam: teams.manzoni },
+    // { FirstTeam: teams.manzoni, SecondTeam: null, WinnerTeam: teams.manzoni },
+    // { FirstTeam: teams.manzoni, SecondTeam: null, WinnerTeam: teams.manzoni },
+    // { FirstTeam: teams.manzoni, SecondTeam: null, WinnerTeam: teams.manzoni },
     // { FirstTeam: teams.manzoni, SecondTeam: null, WinnerTeam: teams.manzoni },
 ];
 
