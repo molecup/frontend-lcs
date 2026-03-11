@@ -2,11 +2,13 @@
 import React, { useMemo } from "react";
 import EmptyState from "./EmptyState";
 
-const DEFAULT_POINT_SYSTEM = { win: 3, draw: 1, loss: 0 };
+const DEFAULT_POINT_SYSTEM = { win: 3, win_p: 2, loss_p: 1, loss: 0 };
 const createBaseStats = (team = {}) => ({
   p: 0,
   w: 0,
   d: 0,
+  w_p : 0,
+  l_p : 0,
   l: 0,
   gf: 0,
   ga: 0,
@@ -53,6 +55,10 @@ const normalizeSide = (side, fallbackId) => {
         : typeof side?.goals === "number"
           ? side.goals
           : 0,
+    penalties:
+      typeof side?.penalties === "number"
+        ? side.penalties
+        : 0,
   };
 };
 const normalizeTeamsFromMatch = (match, matchIdx) => {
@@ -73,7 +79,6 @@ const normalizeTeamsFromMatch = (match, matchIdx) => {
 const updateTeamEntry = (teamMap, side, opponent, pointSystem) => {
   const key = side.id ?? `team-${teamMap.size + 1}`;
   const entry = teamMap.get(key) ?? createBaseStats({ id: key, name: side.name, logo: side.logo, slug: side.slug });
-
   entry.p += 1;
   entry.gf += side.score;
   entry.ga += opponent.score;
@@ -81,13 +86,20 @@ const updateTeamEntry = (teamMap, side, opponent, pointSystem) => {
   if (side.score > opponent.score) {
     entry.w += 1;
     entry.pts += pointSystem.win ?? DEFAULT_POINT_SYSTEM.win;
-  } else if (side.score === opponent.score) {
-    entry.d += 1;
-    entry.pts += pointSystem.draw ?? DEFAULT_POINT_SYSTEM.draw;
-  } else {
+  }
+   else if (side.score < opponent.score) {
     entry.l += 1;
     entry.pts += pointSystem.loss ?? DEFAULT_POINT_SYSTEM.loss;
   }
+   else if (side.penalties > opponent.penalties) {
+    entry.w_p += 1;
+    entry.pts += pointSystem.win_p ?? DEFAULT_POINT_SYSTEM.win_p;
+  }
+    else if (side.penalties < opponent.penalties) {
+    entry.l_p += 1;
+    entry.pts += pointSystem.loss_p ?? DEFAULT_POINT_SYSTEM.loss_p;
+  }
+
 
   entry.gd = entry.gf - entry.ga;
   teamMap.set(key, entry);
@@ -196,8 +208,11 @@ export default function Standings({ groups = [], matches = [], pointSystem = DEF
                 <div className="col w" role="columnheader" title="Vinte">
                   V
                 </div>
-                <div className="col d" role="columnheader" title="Pareggi">
-                  N
+                <div className="col wr" role="columnheader" title="Vinte ai rigori">
+                  VR
+                </div>
+                <div className="col lr" role="columnheader" title="Perse ai rigori">
+                  PR
                 </div>
                 <div className="col l" role="columnheader" title="Perse">
                   P
@@ -246,7 +261,8 @@ export default function Standings({ groups = [], matches = [], pointSystem = DEF
 
                   <div className="col p" role="cell">{team.p ?? 0}</div>
                   <div className="col w" role="cell">{team.w ?? 0}</div>
-                  <div className="col d" role="cell">{team.d ?? 0}</div>
+                  <div className="col wr" role="cell">{team.w_p ?? 0}</div>
+                  <div className="col lr" role="cell">{team.l_p ?? 0}</div>
                   <div className="col l" role="cell">{team.l ?? 0}</div>
                   <div className="col gf" role="cell">{team.gf ?? 0}</div>
                   <div className="col ga" role="cell">{team.ga ?? 0}</div>

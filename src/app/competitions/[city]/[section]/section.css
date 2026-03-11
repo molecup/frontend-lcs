@@ -415,7 +415,7 @@
 
 .city-page .standings-row {
     display: grid;
-    grid-template-columns: 36px 1fr repeat(8, minmax(28px, 44px));
+    grid-template-columns: 36px 1fr repeat(9, minmax(28px, 44px));
     align-items: center;
     gap: .5rem;
     padding: .5rem .5rem;
@@ -557,7 +557,8 @@
 
     .city-page .standings-row .col.p,
     .city-page .standings-row .col.w,
-    .city-page .standings-row .col.d,
+    .city-page .standings-row .col.wr,
+    .city-page .standings-row .col.lr,
     .city-page .standings-row .col.l {
         display: none;
     }
