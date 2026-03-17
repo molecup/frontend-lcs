@@ -1,5 +1,6 @@
 "use client";
 import React, { useMemo } from "react";
+import Link from "next/link";
 import EmptyState from "./EmptyState";
 
 const DEFAULT_POINT_SYSTEM = { win: 3, win_p: 2, loss_p: 1, loss: 0 };
@@ -146,6 +147,12 @@ const normalizeGroupsFallback = (groups = []) =>
     teams: sortTeams((group?.teams ?? []).map((team) => createBaseStats(team))),
   }));
 
+const buildTeamHref = (citySlug, team = {}) => {
+  const teamId = team?.slug ?? team?.id;
+  if (!citySlug || !teamId) return null;
+  return `/competitions/${encodeURIComponent(citySlug)}/squadre/${encodeURIComponent(teamId.toString())}`;
+};
+
 /**
  * Standings
  * Props:
@@ -153,7 +160,7 @@ const normalizeGroupsFallback = (groups = []) =>
  * - matches: Array<{ groupId?: string, groupName?: string, finished?: boolean, teams?: Array, homeTeam?: object, awayTeam?: object }>
  * - pointSystem: { win?: number, draw?: number, loss?: number }
  */
-export default function Standings({ groups = [], matches = [], pointSystem = DEFAULT_POINT_SYSTEM }) {
+export default function Standings({ groups = [], matches = [], pointSystem = DEFAULT_POINT_SYSTEM, citySlug = "" }) {
   const preparedGroups = useMemo(() => {
     const derived = aggregateMatchesByGroup(matches, pointSystem);
     if (derived.length) {
@@ -231,45 +238,67 @@ export default function Standings({ groups = [], matches = [], pointSystem = DEF
                 </div>
               </div>
 
-              {group.teams.map((team, idx) => (
-                <div
-                  key={team.id || team.name || `${groupIdx}-${idx}`}
-                  className={`standings-row body ${idx < 3 ? "top" : ""}`}
-                  role="row"
-                >
-                  <div className="col pos" role="cell">
-                    <span className={`badge ${idx === 0 ? "gold" : idx === 1 ? "silver" : idx === 2 ? "bronze" : ""}`}>
-                      {idx + 1}
-                    </span>
-                  </div>
+              {group.teams.map((team, idx) => {
+                const teamHref = buildTeamHref(citySlug, team);
+                const rowClassName = `standings-row body ${idx < 3 ? "top" : ""}`;
+                const rowCells = (
+                  <>
+                    <div className="col pos" role="cell">
+                      <span className={`badge ${idx === 0 ? "gold" : idx === 1 ? "silver" : idx === 2 ? "bronze" : ""}`}>
+                        {idx + 1}
+                      </span>
+                    </div>
 
-                  <div className="col team" role="cell">
-                    <div className="team-info">
-                      <div className="logo">
-                        {team.logo ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={team.logo} alt={`logo ${team.name}`} loading="lazy" />
-                        ) : (
-                          <div className="placeholder" aria-hidden="true" />
-                        )}
-                      </div>
-                      <div className="name" title={team.name}>
-                        {team.name}
+                    <div className="col team" role="cell">
+                      <div className="team-info">
+                        <div className="logo">
+                          {team.logo ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={team.logo} alt={`logo ${team.name}`} loading="lazy" />
+                          ) : (
+                            <div className="placeholder" aria-hidden="true" />
+                          )}
+                        </div>
+                        <div className="name" title={team.name}>{team.name}</div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="col p" role="cell">{team.p ?? 0}</div>
-                  <div className="col w" role="cell">{team.w ?? 0}</div>
-                  <div className="col wr" role="cell">{team.w_p ?? 0}</div>
-                  <div className="col lr" role="cell">{team.l_p ?? 0}</div>
-                  <div className="col l" role="cell">{team.l ?? 0}</div>
-                  <div className="col gf" role="cell">{team.gf ?? 0}</div>
-                  <div className="col ga" role="cell">{team.ga ?? 0}</div>
-                  <div className="col gd" role="cell">{team.gd ?? (team.gf ?? 0) - (team.ga ?? 0)}</div>
-                  <div className="col pts" role="cell">{team.pts ?? 0}</div>
-                </div>
-              ))}
+                    <div className="col p" role="cell">{team.p ?? 0}</div>
+                    <div className="col w" role="cell">{team.w ?? 0}</div>
+                    <div className="col wr" role="cell">{team.w_p ?? 0}</div>
+                    <div className="col lr" role="cell">{team.l_p ?? 0}</div>
+                    <div className="col l" role="cell">{team.l ?? 0}</div>
+                    <div className="col gf" role="cell">{team.gf ?? 0}</div>
+                    <div className="col ga" role="cell">{team.ga ?? 0}</div>
+                    <div className="col gd" role="cell">{team.gd ?? (team.gf ?? 0) - (team.ga ?? 0)}</div>
+                    <div className="col pts" role="cell">{team.pts ?? 0}</div>
+                  </>
+                );
+
+                if (teamHref) {
+                  return (
+                    <Link
+                      key={team.id || team.name || `${groupIdx}-${idx}`}
+                      href={teamHref}
+                      className={`${rowClassName} standings-row-link`}
+                      role="row"
+                      aria-label={`Apri la pagina di ${team.name}`}
+                    >
+                      {rowCells}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <div
+                    key={team.id || team.name || `${groupIdx}-${idx}`}
+                    className={rowClassName}
+                    role="row"
+                  >
+                    {rowCells}
+                  </div>
+                );
+              })}
             </div>
           </article>
         ))}

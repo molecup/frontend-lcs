@@ -136,7 +136,7 @@ export default async function SectionPage({ params }) {
 
     const sectionContent = {
         squadre: teams.length ? <TeamsRoster teams={teams} citySlug={slug} /> : null,
-        classifica: groups.length ? <Standings groups={groups} matches={rawMatches} /> : null,
+        classifica: groups.length ? <Standings groups={groups} matches={rawMatches} citySlug={slug} /> : null,
         notizie: news.length ? (
             <>
                 <AnimatedSectionTitle className="CityTitleInfo">Notizie</AnimatedSectionTitle>
@@ -166,6 +166,8 @@ export default async function SectionPage({ params }) {
         </div>
     );
 }
+
+
 
 
 
