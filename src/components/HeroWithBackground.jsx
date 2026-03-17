@@ -31,7 +31,7 @@ export default function HeroWithBackground() {
         }
     }, []);
 
-    const images = useMemo(() => ["/eslHome/13.webp", "/eslHome/19.webp"], []);
+    const images = useMemo(() => ["/eslHome/20.webp","/eslHome/13.jpeg", "/eslHome/19.webp"], []);
     const displayText = isSmall ? "lcs" : "lega calcio studenti";
 
     return (
