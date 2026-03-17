@@ -130,7 +130,11 @@ export default async function Page() {
                                 <p>{formatHighlights[0].description}</p>
                             </div>
                             <div className={"imgCircle"}>
-                                <div className={"circle"}><FutbolIcon /></div>
+                                <div className={"circle"}>
+                                    <span style={{ display: "inline-flex", transform: "scale(1.2)" }}>
+                                        <FutbolIcon />
+                                    </span>
+                                </div>
                             </div>
                             <div className={"desc"}></div>
                         </li>
