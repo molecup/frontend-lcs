@@ -107,8 +107,8 @@ export default function NavDesktop({ cities, mounted, persistCitiesOrder }) {
     if ((link.href || "/") === "/") {
       return `/competitions/${citySegment}`;
     }
-    // Altri: usa il segmento originale del link preservando il case (es. "/Classifica" => "Classifica")
-    const baseSeg = (link.href || "/").replace(/^\//, "");
+    // In contesto città le route sono lowercase: evita mismatch tipo /Partite -> 404.
+    const baseSeg = (link.href || "/").replace(/^\//, "").toLowerCase();
     return `/competitions/${citySegment}/${baseSeg}`;
   };
 

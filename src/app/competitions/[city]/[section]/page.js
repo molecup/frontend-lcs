@@ -3,14 +3,12 @@ import { notFound, redirect } from 'next/navigation';
 // import { localleagues, matches as allMatches } from '@/data/CorrectDataStructure';
 import AnimatedTitle from '@/components/AnimatedTitle';
 import TeamsRoster from '@/components/TeamsRoster';
-import MatchesSlider from '@/components/MatchesSlider';
-import LiveMatchTimeline from '@/components/LiveMatchTimeline';
 import AnimatedSectionTitle from '@/components/AnimatedSectionTitle';
 import Standings from '@/components/Standings';
 import NewsSection from '@/components/NewsSection';
 import "./section.css";
 import { getLeagueBySlug, getMatchesByLeagueSlug } from '@/lib/queries';
-import {normalizeMatchData, findLiveMatch} from '@/lib/dataNormalization';
+import {normalizeMatchData} from '@/lib/dataNormalization';
 
 const DEFAULT_LOGO = '/logoCities/lcsw.png';
 const toArray = (value) => (Array.isArray(value) ? value : []);
@@ -90,7 +88,6 @@ const buildGroupsForLeague = (league) => {
 const leagueSections = (league, matches) => {
     const sections = new Set(['home']);
     if (mapTeamsForRoster(league).length) sections.add('squadre');
-    if (matches.length) sections.add('partite');
     if (buildGroupsForLeague(league).length) sections.add('classifica');
     if (toArray(league.news).length) sections.add('notizie');
     return sections;
@@ -101,7 +98,7 @@ export async function generateStaticParams() {
     return localLeagues.flatMap((league) => {
         const slug = league.slug?.toLowerCase();
         if (!slug) return [];
-        return Array.from(leagueSections(league, slug)).map((section) => ({ city: slug, section }));
+        return Array.from(leagueSections(league, [])).map((section) => ({ city: slug, section }));
     });
 }
 
@@ -137,29 +134,8 @@ export default async function SectionPage({ params }) {
     const groups = buildGroupsForLeague(league);
     const news = toArray(league.news);
 
-    const nowTs = Date.now();
-    const liveMatch = findLiveMatch(matches);
-
-    // const placeholderLiveMatch = {
-    //     id: 'nd',
-    //     status: 'ND',
-    //     stage: 'ND',
-    //     score: 'ND - ND',
-    //     events: [],
-    //     home: { name: 'ND' },
-    //     away: { name: 'ND' },
-    //     date: null
-    // };
-    // const timelineMatch = liveMatch || placeholderLiveMatch;
-
     const sectionContent = {
         squadre: teams.length ? <TeamsRoster teams={teams} citySlug={slug} /> : null,
-        partite: matches.length ? (
-            <>
-                <MatchesSlider matches={matches} citySlug={slug} />
-                {liveMatch && <LiveMatchTimeline match={liveMatch} />}
-            </>
-        ) : null,
         classifica: groups.length ? <Standings groups={groups} matches={rawMatches} /> : null,
         notizie: news.length ? (
             <>

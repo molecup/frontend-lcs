@@ -1,0 +1,110 @@
+.sectionHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+}
+
+.sectionHeader h2 {
+    margin: 0;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+}
+
+.sectionHeader p {
+    margin: 0;
+    opacity: 0.85;
+}
+
+.lastMatchLabel {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    opacity: 0.78;
+    text-align: center;
+}
+
+.emptyWrap {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem;
+    border: 1px solid var(--zero);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--secondary) 90%, black 10%);
+    text-align: center;
+}
+
+.emptyHeader {
+    text-align: center;
+}
+
+.emptyHeader h2 {
+    margin: 0 0 0.35rem;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+}
+
+.emptyHeader p {
+    margin: 0;
+    opacity: 0.82;
+}
+
+.placeholderGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.placeholderCard {
+    border: 1px solid var(--zero);
+    border-radius: 12px;
+    padding: 0.9rem;
+    background: color-mix(in srgb, var(--secondary) 82%, var(--text) 8%);
+    min-height: 140px;
+    text-align: center;
+}
+
+.placeholderCard h3 {
+    margin: 0.2rem 0 0.35rem;
+    font-size: 1rem;
+}
+
+.placeholderCard p {
+    margin: 0;
+    opacity: 0.8;
+    font-size: 0.95rem;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--zero);
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0 auto;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+}
+
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    border: 1px solid var(--zero);
+    border-radius: 10px;
+    padding: 0.5rem 0.8rem;
+    color: var(--text);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.backLink:hover {
+    transform: translateY(-1px);
+    background-color: color-mix(in srgb, var(--secondary) 75%, var(--text) 10%);
+}
+
