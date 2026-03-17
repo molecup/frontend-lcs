@@ -7,7 +7,6 @@ import HeroWithBackground from "@/components/HeroWithBackground";
 import styles from "@/app/competitions/competitions.module.css";
 import { getLeagueBySlug, getMatchesByLeagueSlug } from "@/lib/queries";
 import Counter from "@/components/Counter";
-import TestimonialsReveal from "@/components/TestimonialsReveal";
 
 const SectionReveal = dynamic(() => import("@/components/SectionReveal"), {
     ssr: true,
@@ -80,7 +79,15 @@ export default async function Page() {
         }
     ];
 
-    const featuredLeagues = leagues.slice(0, 6);
+    const featuredLeagues = leagues
+        .map((league, index) => ({
+            league,
+            index,
+            schoolsCount: toArray(league.teams).length
+        }))
+        .sort((a, b) => b.schoolsCount - a.schoolsCount || a.index - b.index)
+        .slice(0, 6)
+        .map((entry) => entry.league);
 
     return (
         <div className={"homeESL"}>
