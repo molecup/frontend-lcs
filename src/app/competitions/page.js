@@ -3,6 +3,7 @@ import Link from 'next/link';
 // import { localleagues, matches as allMatches } from '@/data/CorrectDataStructure';
 import styles from './competitions.module.css';
 import { getLeagueBySlug, getMatchesByLeagueSlug } from '@/lib/queries';
+import {redirect} from "next/navigation";
 
 const formatHighlights = [
     {
@@ -41,9 +42,10 @@ const isScheduledMatch = (match) => {
 };
 
 export default async function CompetitionsIndex() {
+    redirect('/'); // Redirect alla prima città (Torino) per ora, in attesa di una pagina generale più completa
     // Le "città" corrispondono alle leghe locali
-    const leagues = await getLeagueBySlug();
-    const matches = await getMatchesByLeagueSlug(); // Ottieni tutti i match per tutte le leghe
+    const leagues = toArray(await getLeagueBySlug());
+    const matches = toArray(await getMatchesByLeagueSlug()); // Ottieni tutti i match per tutte le leghe
 
     const totals = leagues.reduce(
         (acc, league) => {

@@ -67,6 +67,22 @@ export default function SectionReveal({ title, children, className = '', align =
                         duration: 0.6,
                         stagger: 0.15,
                     });
+
+                    // Effetto parallasse per elementi con classe .parallax
+                    const parallaxItems = gsap.utils.toArray(triggerEl.querySelectorAll('.parallax'));
+                    parallaxItems.forEach((item) => {
+                        const speed = item.dataset.speed || 0.5;
+                        gsap.to(item, {
+                            y: (i, target) => -ScrollTrigger.maxScroll(window) * (speed * 0.1),
+                            ease: 'none',
+                            scrollTrigger: {
+                                trigger: triggerEl,
+                                start: 'top bottom',
+                                end: 'bottom top',
+                                scrub: true,
+                            },
+                        });
+                    });
                 }, triggerEl);
 
                 return () => ctx.revert();

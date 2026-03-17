@@ -17,8 +17,8 @@ export const metadata = {
 };
 
 export default async function PartitePage() {
-    // const matches = Array.isArray(eslMatches) ? eslMatches : [];
-    const matches = (await getMatchById()).map(normalizeMatchData);
+    const matches = [];
+    // const matches = (await getMatchById()).map(normalizeMatchData);
     const liveMatch = findLiveMatch(matches);
     const bannerTitle = `${MATCH_CENTER_TITLE} · ${MATCH_CENTER_TAGLINE}`;
 

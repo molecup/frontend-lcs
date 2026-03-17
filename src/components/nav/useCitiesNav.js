@@ -35,7 +35,6 @@ const SECTION_LINKS = [
   { name: "Squadre", href: "/squadre" },
   { name: "Classifica", href: "/classifica" },
   { name: "Partite", href: "/partite" },
-  { name: "", href: ""} //elemento vuoto per spacing
 ];
 
 export function useCitiesNav(pathname, defaultCities) {

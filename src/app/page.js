@@ -2,48 +2,105 @@ import dynamic from "next/dynamic";
 import img from "../../public/eslHome/DSCF6614-Migliorato-NR.webp";
 import Image from "next/image";
 import Link from "next/link";
-import { FutbolIcon, TrophyIcon, StarIcon, PeopleGroupIcon, HandHoldingHeartIcon, HandHoldingDollarIcon } from "@/components/Icons";
-import { redirect } from "next/navigation";
-
-// Componenti above-the-fold caricati normalmente
+import { FutbolIcon, TrophyIcon, StarIcon, MapPinIcon, CalendarIcon, PeopleGroupIcon } from "@/components/Icons";
 import HeroWithBackground from "@/components/HeroWithBackground";
-// import { redirect } from "next/dist/server/api-utils";
+import styles from "@/app/competitions/competitions.module.css";
+import { getLeagueBySlug, getMatchesByLeagueSlug } from "@/lib/queries";
+import Counter from "@/components/Counter";
+import TestimonialsReveal from "@/components/TestimonialsReveal";
 
-// Lazy load dei componenti below-the-fold per ridurre il bundle iniziale
 const SectionReveal = dynamic(() => import("@/components/SectionReveal"), {
     ssr: true,
 });
-const EventReveal = dynamic(() => import("@/components/EventReveal"), {
-    ssr: true,
-    loading: () => <div style={{ minHeight: "300px" }} />,
-});
-const TestimonialsReveal = dynamic(() => import("@/components/TestimonialsReveal"), {
-    ssr: true,
-    loading: () => <div style={{ minHeight: "300px" }} />,
-});
 
-export default function Page() {
-    redirect("/competitions");
+const formatHighlights = [
+    {
+        title: "Gironi dinamici",
+        description: "Ogni citta struttura i propri gironi in base alle scuole iscritte con aggiornamenti weekly."
+    },
+    {
+        title: "Knockout Day",
+        description: "Le migliori squadre accedono a semifinali e finale secca in giornata dedicata."
+    },
+    {
+        title: "Cronache live",
+        description: "Timeline e score vengono aggiornati in tempo reale per match live e programmati."
+    }
+];
+
+const toArray = (value) => (Array.isArray(value) ? value : []);
+const parseDate = (value) => {
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? null : d;
+};
+
+const isLiveMatch = (match) => {
+    if (!match || match.finished) return false;
+    const dt = parseDate(match.datetime);
+    if (!dt) return false;
+    return dt <= new Date();
+};
+
+const isScheduledMatch = (match) => {
+    if (!match || match.finished) return false;
+    const dt = parseDate(match.datetime);
+    if (!dt) return false;
+    return dt > new Date();
+};
+
+export default async function Page() {
+    const leagues = toArray(await getLeagueBySlug());
+    const matches = toArray(await getMatchesByLeagueSlug());
+
+    const totals = leagues.reduce(
+        (acc, league) => {
+            const teams = toArray(league.teams);
+            return {
+                schools: acc.schools + teams.length,
+                matches: acc.matches,
+                liveMatches: acc.liveMatches,
+                upcoming: acc.upcoming
+            };
+        },
+        { schools: 0, matches: 0, liveMatches: 0, upcoming: 0 }
+    );
+
+    totals.matches = matches.length;
+    totals.liveMatches = matches.filter(isLiveMatch).length;
+    totals.upcoming = matches.filter(isScheduledMatch).length;
+
+    const heroStats = [
+        { label: "Citta attive", value: leagues.length, hint: "stagione in corso" },
+        { label: "Scuole iscritte", value: totals.schools, hint: "team approvati" },
+        { label: "Match programmati", value: totals.matches, hint: "calendario ufficiale" },
+        {
+            label: "Live ora",
+            value: totals.liveMatches,
+            hint: totals.upcoming ? `${totals.upcoming} in arrivo` : "nessuno in programma"
+        }
+    ];
+
+    const featuredLeagues = leagues.slice(0, 6);
+
     return (
         <div className={"homeESL"}>
             <HeroWithBackground text="lega calcio studenti" />
 
             <div className={"contentHome"}>
-                <EventReveal />
-                {/* Sezioni di esempio con animazione GSAP su scroll */}
                 <SectionReveal title="" align="right">
+                    <div className="bg-blob bg-blob--1"></div>
                     <div className={"div-content"}>
                         <div className={"div-content-text"}>
                             <h2>Chi siamo</h2>
-                            <p>Lega Calcio Studenti (LCS) è una lega studentesca nata con l&#39;obiettivo di valorizzare lo sport nel contesto scolastico, incentivando i licei a supportare i propri atleti e proponendo ai partecipanti nuove opportunità accademiche e didattiche.</p>
-                            <Link href="/competitions" className="btn-cta">Scopri di più</Link>
+                            <p>Lega Calcio Studenti (LCS) e una lega studentesca nata con l&#39;obiettivo di valorizzare lo sport nel contesto scolastico, incentivando i licei a supportare i propri atleti e proponendo ai partecipanti nuove opportunita accademiche e didattiche.</p>
+                            <Link href="/competitions" className="btn-cta">Scopri di piu</Link>
                         </div>
-                        <figure className="div-image">
+                        <figure className="div-image parallax" data-speed="0.2">
                             <Image
                                 src={img}
                                 alt="Mole Cup"
                                 fill
-                                loading="lazy"  // non è priority
+                                loading="lazy"
                                 quality={1}
                                 sizes="(max-width: 900px) 100vw, 520px"
                                 style={{ objectFit: "cover" }}
@@ -51,36 +108,48 @@ export default function Page() {
                         </figure>
                     </div>
                 </SectionReveal>
-                <SectionReveal title="Come funziona" align="center">
+
+                <SectionReveal title="Il format LCS" align="center">
+                    <div className="bg-blob bg-blob--2"></div>
+                    <div className={styles.stats}>
+                        {heroStats.map((stat) => (
+                            <article key={stat.label} className={styles.statCard}>
+                                <span className={styles.statValue}>
+                                    <Counter value={stat.value} />
+                                </span>
+                                <span>{stat.label}</span>
+                                <small>{stat.hint}</small>
+                            </article>
+                        ))}
+                    </div>
+
                     <ul className={"timeline"}>
                         <li>
                             <div className={"desc"}>
-                                <h4>Fase a gironi</h4>
-                                <p>Le squadre si affrontano in tre gironi da quattro squadre</p>
+                                <h4>{formatHighlights[0].title}</h4>
+                                <p>{formatHighlights[0].description}</p>
                             </div>
                             <div className={"imgCircle"}>
                                 <div className={"circle"}><FutbolIcon /></div>
                             </div>
                             <div className={"desc"}></div>
                         </li>
-                        <li className={"linea"}>
-                        </li>
+                        <li className={"linea"}></li>
                         <li>
-                            <div className={"desc"}>
-                            </div>
+                            <div className={"desc"}></div>
                             <div className={"imgCircle"}>
                                 <div className={"circle"}><TrophyIcon /></div>
                             </div>
                             <div className={"desc desc-right"}>
-                                <h4>Eliminazione diretta</h4>
-                                <p>Le 12 migliori squadre procedono alla fase ad eliminazione diretta</p>
+                                <h4>{formatHighlights[1].title}</h4>
+                                <p>{formatHighlights[1].description}</p>
                             </div>
                         </li>
                         <li className={"linea"}></li>
                         <li>
                             <div className={"desc"}>
-                                <h4>Finale nazionale</h4>
-                                <p>Stay tuned</p>
+                                <h4>{formatHighlights[2].title}</h4>
+                                <p>{formatHighlights[2].description}</p>
                             </div>
                             <div className={"imgCircle"}>
                                 <div className={"circle"}><StarIcon /></div>
@@ -88,46 +157,84 @@ export default function Page() {
                             <div className={"desc"}></div>
                         </li>
                     </ul>
-
                 </SectionReveal>
 
-                {/* Nuova sezione: I nostri valori */}
-                <SectionReveal title="I nostri valori" align="left" className="values-section">
-                    <p className="values-lead">Lo sport nei giovani può avere un impatto sulla formazione del futuro</p>
-                    <div className="values-grid">
-                        <article className="value-card">
-                            <div className="value-icon"><PeopleGroupIcon /></div>
-                            <h3>Alternanza scuola lavoro</h3>
-                            <ul className="value-list">
-                                <li>Riprese e montaggio</li>
-                                <li>Giornalismo</li>
-                                <li>Sicurezza</li>
-                            </ul>
-                        </article>
-                        <article className="value-card">
-                            <div className="value-icon"><HandHoldingHeartIcon /></div>
-                            <h3>Cause benefiche</h3>
-                            <div className="pills">
-                                <span className="pill">ONG Interos</span>
-                                <span className="pill">Just the woman I am</span>
-                                <span className="pill">Onlus</span>
-                                <span className="pill">African Impact</span>
-                                <span className="pill">FFF</span>
-                            </div>
-                        </article>
-                        <article className="value-card">
-                            <div className="value-icon"><HandHoldingDollarIcon /></div>
-                            <h3>Donazioni</h3>
-                            <p className="value-stats">Abbiamo donato oltre <strong>3000€</strong> per l&#39;emergenza Covid e oltre <strong>500€</strong> all&#39;associazione Genova nel cuore</p>
-                        </article>
+                <SectionReveal title="" align="left">
+                    <div className="bg-blob bg-blob--1" style={{ bottom: '0', top: 'auto' }}></div>
+
+                    <div className={styles.citySection} style={{ marginTop: "24px" }}>
+                        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+                            <p className={styles.eyebrow}>Sedi ufficiali</p>
+                            <h2 style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontFamily: 'var(--font)' }}>Le competizioni in evidenza</h2>
+                            <p className={styles.subtitle} style={{ maxWidth: '800px', margin: '10px auto' }}>
+                                Esplora i tornei attivi nelle principali città italiane. Segui la tua squadra, guarda i risultati in tempo reale e scopri i prossimi incontri.
+                            </p>
+                        </div>
+
+                        <div className={styles.cityGridFeatured}>
+                            {featuredLeagues.map((league) => {
+                                const teams = toArray(league.teams);
+                                const leagueMatches = matches.filter((m) =>
+                                    toArray(m.teams).some((tm) => tm?.team?.local_league === league.slug)
+                                );
+                                const liveNow = leagueMatches.filter(isLiveMatch).length;
+                                const scheduled = leagueMatches.filter(isScheduledMatch).length;
+                                const total = leagueMatches.length;
+
+                                return (
+                                    <article key={league.slug ?? league.id} className={styles.cityCard}>
+                                        <div className={styles.cardHeader}>
+                                            <h3>{league.title || league.name}</h3>
+                                            <span className={styles.chip}>
+                                                <PeopleGroupIcon className={styles.metaIcon} style={{ width: '14px', height: '14px', marginRight: '6px' }} />
+                                                {teams.length ? `${teams.length} scuole` : "In arrivo"}
+                                            </span>
+                                        </div>
+
+                                        <div className={styles.cityMeta}>
+                                            {liveNow > 0 && (
+                                                <div className={styles.metaItem}>
+                                                    <span className={styles.livePulse}></span>
+                                                    <span style={{ color: '#ff4b4b', fontWeight: 'bold' }}>{liveNow} MATCH LIVE ORA</span>
+                                                </div>
+                                            )}
+                                            
+                                            <div className={styles.metaItem}>
+                                                <span className={styles.metaIcon}><FutbolIcon /></span>
+                                                <span>{total > 0 ? `${total} match totali` : "Calendario in allestimento"}</span>
+                                            </div>
+
+                                            <div className={styles.metaItem}>
+                                                <span className={styles.metaIcon}><CalendarIcon /></span>
+                                                <span>{scheduled > 0 ? `${scheduled} match in programma` : "Nessun match imminente"}</span>
+                                            </div>
+                                            
+                                            <div className={styles.metaItem}>
+                                                <span className={styles.metaIcon}><MapPinIcon /></span>
+                                                <span>Sede: {league.title || league.name}</span>
+                                            </div>
+                                        </div>
+
+                                        <div className={styles.cardFooter}>
+                                            <Link className={styles.cityLink} href={`/competitions/${league.slug}`}>
+                                                Esplora città
+                                            </Link>
+                                        </div>
+                                    </article>
+                                );
+                            })}
+                        </div>
+
+                        {/*<div style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>*/}
+                        {/*    <Link href="/competitions" className="btn-cta">*/}
+                        {/*        Vai a tutte le competizioni*/}
+                        {/*    </Link>*/}
+                        {/*</div>*/}
                     </div>
                 </SectionReveal>
 
-                {/* Nuova sezione: Dicono di noi */}
-                <TestimonialsReveal />
-
+                {/*<TestimonialsReveal />*/}
             </div>
-
         </div>
     );
 }

@@ -76,8 +76,10 @@ body{
 
 /* SectionReveal base styles */
 .section-reveal {
-    padding: 75px;
+    padding: 100px 75px;
     color: var(--text);
+    position: relative;
+    overflow: hidden;
 }
 .section-reveal__title {
     font-family: var(--font), sans-serif; /* fallback generico esplicito per il linter */
@@ -113,14 +115,19 @@ body{
 
 .homeESL .div-content-text{
     grid-area: text;
-    background: transparent;
+    background: rgba(255, 255, 255, 0.03);
     color: var(--text);
-    padding: clamp(16px, 2.2vw, 28px);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 16px;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    padding: clamp(24px, 3.5vw, 40px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.homeESL .div-content-text:hover {
+    border-color: rgba(255, 255, 255, 0.2);
 }
 .homeESL .div-content-text h2{
     font-family: var(--font), sans-serif; /* fallback generico esplicito per il linter */
@@ -135,35 +142,43 @@ body{
 }
 .homeESL .btn-cta{
     display: inline-block;
-    margin-top: 14px;
-    padding: 10px 16px;
-    border-radius: 12px;
+    margin-top: 20px;
+    padding: 12px 24px;
+    border-radius: 50px;
     background: linear-gradient(135deg, var(--third), var(--aux));
     color: #000;
     font-weight: 700;
     text-decoration: none;
-    box-shadow: 0 6px 18px rgba(255, 203, 5, 0.25);
-    transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.9rem;
+    box-shadow: 0 8px 20px rgba(0, 237, 175, 0.3);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .homeESL .btn-cta:hover{
-    transform: translateY(-1px);
-    box-shadow: 0 10px 24px rgba(255, 203, 5, 0.35);
-    filter: brightness(1.02);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 28px rgba(0, 237, 175, 0.45);
+    filter: brightness(1.1);
 }
 .homeESL .div-image{
     grid-area: image;
     position: relative;
     width: 100%;
     aspect-ratio: 4/3;
-    border-radius: 18px;
+    border-radius: 24px;
     overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    transition: transform 0.5s ease;
+}
+.homeESL .div-image:hover {
+    transform: scale(1.02);
 }
 .timeline{
     display: flex;
     flex-direction: column;
     gap: 5px;
+    margin-top: 10vh;
 }
 .timeline li{
     display: flex;
@@ -194,15 +209,21 @@ body{
     align-items: center;
 }
 .timeline .circle{
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    background-color: var(--third);
+    background: linear-gradient(135deg, var(--third), var(--aux));
     display: flex;
     justify-content: center;
     align-items: center;
     color: #000;
     font-weight: 700;
+    box-shadow: 0 0 20px rgba(0, 237, 175, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.timeline li:hover .circle {
+    transform: scale(1.15);
+    box-shadow: 0 0 30px rgba(0, 237, 175, 0.6);
 }
 .linea{
     width: 2px;
@@ -435,10 +456,20 @@ body{
 .event-reveal .feature-title {
     font-size: clamp(16px, 2vw, 18px);
 }
-.event-reveal .feature-text {
-    font-size: 14px;
-    opacity: 0.9;
+/* Background Decorations */
+.bg-blob {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
+    filter: blur(80px);
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: -1;
+    border-radius: 50%;
 }
+.bg-blob--1 { top: 10%; left: -100px; }
+.bg-blob--2 { bottom: 10%; right: -100px; background: radial-gradient(circle, var(--third) 0%, transparent 70%); }
 .event-copy {
     display: flex;
     flex-direction: column;
