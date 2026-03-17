@@ -52,6 +52,7 @@ export default function SectionReveal({ title, children, className = '', align =
 
                 const ctx = gsap.context(() => {
                     gsap.set(items, { autoAlpha: 0, y: 20 });
+                    const isMobile = window.matchMedia('(max-width: 900px)').matches;
 
                     gsap.timeline({
                         defaults: { ease: 'power3.out' },
@@ -68,21 +69,23 @@ export default function SectionReveal({ title, children, className = '', align =
                         stagger: 0.15,
                     });
 
-                    // Effetto parallasse per elementi con classe .parallax
-                    const parallaxItems = gsap.utils.toArray(triggerEl.querySelectorAll('.parallax'));
-                    parallaxItems.forEach((item) => {
-                        const speed = item.dataset.speed || 0.5;
-                        gsap.to(item, {
-                            y: (i, target) => -ScrollTrigger.maxScroll(window) * (speed * 0.1),
-                            ease: 'none',
-                            scrollTrigger: {
-                                trigger: triggerEl,
-                                start: 'top bottom',
-                                end: 'bottom top',
-                                scrub: true,
-                            },
+                    // Effetto parallasse solo desktop: su mobile causa overlap nello stack verticale.
+                    if (!isMobile) {
+                        const parallaxItems = gsap.utils.toArray(triggerEl.querySelectorAll('.parallax'));
+                        parallaxItems.forEach((item) => {
+                            const speed = item.dataset.speed || 0.5;
+                            gsap.to(item, {
+                                y: () => -ScrollTrigger.maxScroll(window) * (speed * 0.1),
+                                ease: 'none',
+                                scrollTrigger: {
+                                    trigger: triggerEl,
+                                    start: 'top bottom',
+                                    end: 'bottom top',
+                                    scrub: true,
+                                },
+                            });
                         });
-                    });
+                    }
                 }, triggerEl);
 
                 return () => ctx.revert();

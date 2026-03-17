@@ -587,7 +587,10 @@ p.event-tagline{
     .homeESL .div-image{
         aspect-ratio: 16/9;
     }
+    .homeESL .div-image.parallax{
+        transform: none !important;
+    }
     .event-reveal .event-title{
-        text-align: center;
+    text-align: center;
     }
 }

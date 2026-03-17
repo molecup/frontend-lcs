@@ -26,31 +26,34 @@ export default function NavClientSide({defaultCities}) {
   const lastScrollY = useRef(0);
 
   useEffect(() => {
+    const TOP_LOCK_THRESHOLD = 80;
+    const DIRECTION_DELTA = 6;
+
     const handleScroll = () => {
-      // Solo su schermi > 1100px
-      if (window.innerWidth <= 1100) {
+      const currentScrollY = Math.max(window.scrollY || 0, 0);
+      const delta = currentScrollY - lastScrollY.current;
+
+      // Keep navbar visible near top of page.
+      if (currentScrollY <= TOP_LOCK_THRESHOLD) {
         setNavHidden(false);
+        lastScrollY.current = currentScrollY;
         return;
       }
 
-      const currentScrollY = window.scrollY;
-      const scrollingDown = currentScrollY > lastScrollY.current;
-      const scrolledPastThreshold = currentScrollY > 100;
-
-      if (scrollingDown && scrolledPastThreshold) {
-        setNavHidden(true);
-      } else {
-        setNavHidden(false);
+      // Ignore tiny movement to avoid flicker.
+      if (Math.abs(delta) < DIRECTION_DELTA) {
+        lastScrollY.current = currentScrollY;
+        return;
       }
 
+      setNavHidden(delta > 0);
       lastScrollY.current = currentScrollY;
     };
 
+    lastScrollY.current = Math.max(window.scrollY || 0, 0);
     window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
     };
   }, []);
 

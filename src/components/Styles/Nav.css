@@ -6,6 +6,7 @@ nav{
     z-Index: 1000;
     height: 110px;
     transition: transform 0.3s ease-in-out;
+    will-change: transform;
 }
 nav.nav-hidden{
     transform: translateY(-100%);
