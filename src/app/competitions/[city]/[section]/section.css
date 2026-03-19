@@ -156,7 +156,6 @@
 
 .city-page .team-logo {
     position: relative;
-    width: 66px;
     aspect-ratio: 1/1;
     border-radius: 10px;
     overflow: hidden;
@@ -725,7 +724,6 @@
     width: 72px;
     height: 72px;
     border-radius: 18px;
-    background: rgba(255, 255, 255, 0.04);
     display: grid;
     place-items: center;
     overflow: hidden;
