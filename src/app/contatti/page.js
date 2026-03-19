@@ -3,9 +3,9 @@
 import { useMemo, useState } from "react";
 import styles from "./contatti.module.css";
 
-const CONTACT_EMAIL = "contatti@lcsleague.it";
+const CONTACT_EMAIL = "amministrazione@estudentsleague.com";
 const CONTACT_PHONE = "+39 011 123 4567";
-const CONTACT_ADDRESS = "Via dello Sport 21, 10100 Torino";
+const CONTACT_ADDRESS = "Corso vinzaglio 24, 10121, Torino, Italy";
 
 const infoCards = [
     {
@@ -21,7 +21,7 @@ const infoCards = [
         label: "Scuole e dirigenti",
         description: "Onboarding scuole, partnership educative e format ESL.",
         ctaLabel: "Prenota una call",
-        href: "mailto:partnership@lcsleague.it?subject=Partnership%20istituto",
+        href: `mailto:${CONTACT_EMAIL}?subject=Partnership%20istituto`,
         meta: "Disponibilità lun-ven"
     },
     {
@@ -100,10 +100,10 @@ export default function ContattiPage() {
                         <span>HQ</span>
                         <strong>{CONTACT_ADDRESS}</strong>
                     </div>
-                    <div>
+                    {/* <div>
                         <span>Telefono</span>
                         <a href={`tel:${CONTACT_PHONE.replace(/\s+/g, "")}`}>{CONTACT_PHONE}</a>
-                    </div>
+                    </div> */}
                     <div>
                         <span>Email</span>
                         <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>

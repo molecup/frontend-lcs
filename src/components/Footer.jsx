@@ -61,7 +61,7 @@ export default function Footer() {
                         </li>
                         <li>
                             <address>
-                                Via Don Giovanni Minzoni 14 <br/>
+                                Corso vinzaglio 24 <br/>
                                 10121 <br/>
                                 Torino, Italy
                             </address>
