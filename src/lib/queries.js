@@ -20,7 +20,7 @@ export async function getLeagueBySlug(slug = null) {
 
 export async function getMatchesByLeagueSlug(leagueSlug = null) {
     const filter = leagueSlug ? "?local-league=" + leagueSlug : "";
-    const response = await fetch(`${API_URL_BASE}/matches/${filter}`);
+    const response = await fetch(`${API_URL_BASE}/matches/${filter}`, {cache: 'no-store'});
     if (!response.ok) {
         console.warn(`Failed to fetch matches: ${response.status}`);
         return null;
@@ -30,7 +30,7 @@ export async function getMatchesByLeagueSlug(leagueSlug = null) {
 
 export async function getMatchById(matchId = null) {
     const slugComponent = matchId ? `${matchId}/` : '';
-    const response = await fetch(`${API_URL_BASE}/matches/${slugComponent}`);
+    const response = await fetch(`${API_URL_BASE}/matches/${slugComponent}`, {cache: 'no-store'});
     if (!response.ok) {
         console.warn(`Failed to fetch match: ${response.status}`);
         return null;
@@ -40,7 +40,7 @@ export async function getMatchById(matchId = null) {
 
 export async function getTeamBySlug(teamSlug = null) {
     const slugComponent = teamSlug ? `${teamSlug}/` : '';
-    const response = await fetch(`${API_URL_BASE}/teams/${slugComponent}`);
+    const response = await fetch(`${API_URL_BASE}/teams/${slugComponent}`, {cache: 'no-store'});
     if (!response.ok) {
         console.warn(`Failed to fetch team: ${response.status}`);
         return null;
@@ -50,7 +50,7 @@ export async function getTeamBySlug(teamSlug = null) {
 
 export async function getNewsBySlug(slug = null) {
     const slugComponent = slug ? `${slug}/` : '';
-    const response = await fetch(`${API_URL_BASE}/news/${slugComponent}`);
+    const response = await fetch(`${API_URL_BASE}/news/${slugComponent}`, {cache: 'no-store'});
     if (!response.ok) {
         console.warn(`Failed to fetch news: ${response.status}`);
         return null;
@@ -60,7 +60,7 @@ export async function getNewsBySlug(slug = null) {
 
 export async function getNewsByLeagueSlug(leagueSlug = null) {
     const filter = leagueSlug ? "?local-league=" + leagueSlug : "";
-    const response = await fetch(`${API_URL_BASE}/news/${filter}`);
+    const response = await fetch(`${API_URL_BASE}/news/${filter}`, {cache: 'no-store'});
     if (!response.ok) {
         console.warn(`Failed to fetch news by league: ${response.status}`);
         return null;
