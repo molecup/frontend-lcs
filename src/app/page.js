@@ -15,7 +15,7 @@ const SectionReveal = dynamic(() => import("@/components/SectionReveal"), {
 const formatHighlights = [
     {
         title: "Gironi dinamici",
-        description: "Ogni citta struttura i propri gironi in base alle scuole iscritte con aggiornamenti weekly."
+        description: "Ogni città struttura i propri gironi in base alle scuole iscritte con aggiornamenti weekly."
     },
     {
         title: "Knockout Day",
