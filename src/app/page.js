@@ -28,6 +28,10 @@ const formatHighlights = [
 ];
 
 const toArray = (value) => (Array.isArray(value) ? value : []);
+const resolveLeagueSlug = (league) => {
+    const raw = league?.slug;
+    return typeof raw === "string" && raw.trim() ? raw.trim().toLowerCase() : null;
+};
 const parseDate = (value) => {
     const d = new Date(value);
     return Number.isNaN(d.getTime()) ? null : d;
@@ -184,16 +188,17 @@ export default async function Page() {
 
                         <div className={styles.cityGridFeatured}>
                             {featuredLeagues.map((league) => {
+                                const leagueSlug = resolveLeagueSlug(league);
                                 const teams = toArray(league.teams);
                                 const leagueMatches = matches.filter((m) =>
-                                    toArray(m.teams).some((tm) => tm?.team?.local_league === league.slug)
+                                    toArray(m.teams).some((tm) => tm?.team?.local_league?.toLowerCase?.() === leagueSlug)
                                 );
                                 const liveNow = leagueMatches.filter(isLiveMatch).length;
                                 const scheduled = leagueMatches.filter(isScheduledMatch).length;
                                 const total = leagueMatches.length;
 
-                                return (
-                                    <article key={league.slug ?? league.id} className={styles.cityCard}>
+                                const cardContent = (
+                                    <>
                                         <div className={styles.cardHeader}>
                                             <h3>{league.title || league.name}</h3>
                                             <span className={styles.chip}>
@@ -227,10 +232,31 @@ export default async function Page() {
                                         </div>
 
                                         <div className={styles.cardFooter}>
-                                            <Link className={styles.cityLink} href={`/competitions/${league.slug}`}>
-                                                Esplora città
-                                            </Link>
+                                            <span className={`${styles.cityLink} ${leagueSlug ? '' : styles.cityLinkDisabled}`}>
+                                                {leagueSlug ? 'Esplora citta' : 'Citta non disponibile'}
+                                            </span>
                                         </div>
+                                    </>
+                                );
+
+                                if (leagueSlug) {
+                                    return (
+                                        <Link
+                                            key={leagueSlug ?? league.id}
+                                            className={styles.cityCardLink}
+                                            href={`/competitions/${encodeURIComponent(leagueSlug)}`}
+                                            aria-label={`Esplora citta ${league.title || league.name}`}
+                                        >
+                                            <article className={styles.cityCard}>
+                                                {cardContent}
+                                            </article>
+                                        </Link>
+                                    );
+                                }
+
+                                return (
+                                    <article key={league.id} className={`${styles.cityCard} ${styles.cityCardDisabled}`}>
+                                        {cardContent}
                                     </article>
                                 );
                             })}

@@ -9,6 +9,13 @@ export default function NavMobile({ mobileCities, sectionLinks }) {
   const mobileCitiesPanelRef = useRef(null);
   const mobileCitiesListRef = useRef(null);
   const mobileSectionsListRef = useRef(null);
+  const focusedCityIndexRef = useRef(0);
+  const focusedSectionIndexRef = useRef(0);
+  const isUserDraggingRef = useRef(false);
+  const dragStartRef = useRef({ x: 0, y: 0 });
+  const didDragRef = useRef(false);
+  const suppressAutoCenterUntilRef = useRef(0);
+  const scrollEndTimeoutRef = useRef(null);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -25,6 +32,8 @@ export default function NavMobile({ mobileCities, sectionLinks }) {
 
   const scrollItemIntoCenter = (container, index) => {
     if (!container || index < 0) return;
+    if (isUserDraggingRef.current) return;
+    if (Date.now() < suppressAutoCenterUntilRef.current) return;
     const items = container.querySelectorAll("li");
     const target = items[index];
     if (!target) return;
@@ -54,6 +63,14 @@ export default function NavMobile({ mobileCities, sectionLinks }) {
     );
     return matchIndex >= 0 ? matchIndex : 0;
   });
+
+  useEffect(() => {
+    focusedCityIndexRef.current = focusedCityIndex;
+  }, [focusedCityIndex]);
+
+  useEffect(() => {
+    focusedSectionIndexRef.current = focusedSectionIndex;
+  }, [focusedSectionIndex]);
 
   useEffect(() => {
     const slugFromPath = getSlugFromPathname(pathname || "");
@@ -101,7 +118,7 @@ export default function NavMobile({ mobileCities, sectionLinks }) {
     if (!items.length) return -1;
 
     // se siamo a inizio scroll orizzontale: focus forzato sul primo
-    if (axis === "x" && container.scrollLeft === 0) {
+    if (axis === "x" && container.scrollLeft <= 2) {
       items.forEach((el, i) => {
         const isFirst = i === 0;
         gsap.to(el, {
@@ -160,6 +177,16 @@ export default function NavMobile({ mobileCities, sectionLinks }) {
       }
     };
     const onScroll = () => {
+      if (axis === "x") {
+        isUserDraggingRef.current = true;
+        suppressAutoCenterUntilRef.current = Date.now() + 220;
+        if (scrollEndTimeoutRef.current) {
+          clearTimeout(scrollEndTimeoutRef.current);
+        }
+        scrollEndTimeoutRef.current = setTimeout(() => {
+          isUserDraggingRef.current = false;
+        }, 140);
+      }
       if (!ticking) {
         ticking = true;
         requestAnimationFrame(() => {
@@ -177,6 +204,70 @@ export default function NavMobile({ mobileCities, sectionLinks }) {
     return () => {
       container.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+      if (scrollEndTimeoutRef.current) {
+        clearTimeout(scrollEndTimeoutRef.current);
+      }
+    };
+  };
+
+  const attachHorizontalGestureGuard = (container) => {
+    if (!container) return () => {};
+    const SWIPE_THRESHOLD_PX = 10;
+
+    const onStart = (x, y) => {
+      dragStartRef.current = { x, y };
+      didDragRef.current = false;
+    };
+
+    const onMove = (x, y) => {
+      const dx = Math.abs(x - dragStartRef.current.x);
+      const dy = Math.abs(y - dragStartRef.current.y);
+      if (dx > SWIPE_THRESHOLD_PX && dx > dy) {
+        didDragRef.current = true;
+        isUserDraggingRef.current = true;
+        suppressAutoCenterUntilRef.current = Date.now() + 220;
+      }
+    };
+
+    const onEnd = () => {
+      setTimeout(() => {
+        isUserDraggingRef.current = false;
+      }, 0);
+    };
+
+    const onPointerDown = (e) => onStart(e.clientX, e.clientY);
+    const onPointerMove = (e) => onMove(e.clientX, e.clientY);
+    const onPointerUp = () => onEnd();
+    const onTouchStart = (e) => {
+      const t = e.touches && e.touches[0];
+      if (!t) return;
+      onStart(t.clientX, t.clientY);
+    };
+    const onTouchMove = (e) => {
+      const t = e.touches && e.touches[0];
+      if (!t) return;
+      onMove(t.clientX, t.clientY);
+    };
+    const onTouchEnd = () => onEnd();
+
+    container.addEventListener("pointerdown", onPointerDown, { passive: true });
+    container.addEventListener("pointermove", onPointerMove, { passive: true });
+    container.addEventListener("pointerup", onPointerUp, { passive: true });
+    container.addEventListener("pointercancel", onPointerUp, { passive: true });
+    container.addEventListener("touchstart", onTouchStart, { passive: true });
+    container.addEventListener("touchmove", onTouchMove, { passive: true });
+    container.addEventListener("touchend", onTouchEnd, { passive: true });
+    container.addEventListener("touchcancel", onTouchEnd, { passive: true });
+
+    return () => {
+      container.removeEventListener("pointerdown", onPointerDown);
+      container.removeEventListener("pointermove", onPointerMove);
+      container.removeEventListener("pointerup", onPointerUp);
+      container.removeEventListener("pointercancel", onPointerUp);
+      container.removeEventListener("touchstart", onTouchStart);
+      container.removeEventListener("touchmove", onTouchMove);
+      container.removeEventListener("touchend", onTouchEnd);
+      container.removeEventListener("touchcancel", onTouchEnd);
     };
   };
 
@@ -193,28 +284,34 @@ export default function NavMobile({ mobileCities, sectionLinks }) {
       }
     });
     if (left) left.scrollLeft = 0;
-    scrollItemIntoCenter(right, focusedCityIndex);
-    scrollItemIntoCenter(sections, focusedSectionIndex);
+    scrollItemIntoCenter(right, focusedCityIndexRef.current);
+    scrollItemIntoCenter(sections, focusedSectionIndexRef.current);
     const cleanLeft = attachFocusHandlers(left, "x");
     const cleanRight = attachFocusHandlers(right, "x", setFocusedCityIndex);
     const cleanSections = attachFocusHandlers(sections, "x", setFocusedSectionIndex);
+    const cleanRightDragGuard = attachHorizontalGestureGuard(right);
+    const cleanSectionsDragGuard = attachHorizontalGestureGuard(sections);
     [left, right, sections].forEach((list) => {
       if (!list) return;
       const lis = list.querySelectorAll("li");
       let focusIndex = 0;
-      if (list === right) focusIndex = focusedCityIndex;
-      else if (list === sections) focusIndex = focusedSectionIndex;
+      if (list === right) focusIndex = focusedCityIndexRef.current;
+      else if (list === sections) focusIndex = focusedSectionIndexRef.current;
       lis.forEach((li, i) => li.classList.toggle("focused", i === focusIndex));
     });
     return () => {
       cleanLeft();
       cleanRight();
       cleanSections();
+      cleanRightDragGuard();
+      cleanSectionsDragGuard();
     };
-  }, [open, focusedCityIndex, focusedSectionIndex]);
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
+    if (isUserDraggingRef.current) return;
+    if (Date.now() < suppressAutoCenterUntilRef.current) return;
     const right = mobileCitiesListRef.current;
     scrollItemIntoCenter(right, focusedCityIndex);
   }, [open, focusedCityIndex]);
@@ -241,14 +338,26 @@ export default function NavMobile({ mobileCities, sectionLinks }) {
   }, [open]);
 
   const handleMobileCityClick = (e, city, index) => {
+    if (didDragRef.current || isUserDraggingRef.current) {
+      e.preventDefault();
+      didDragRef.current = false;
+      return;
+    }
     e.preventDefault();
+    didDragRef.current = false;
     setFocusedCityIndex(index);
     setOpen(false);
     router.push(city.href);
   };
 
   const handleMobileSectionClick = (e, link, index) => {
+    if (didDragRef.current || isUserDraggingRef.current) {
+      e.preventDefault();
+      didDragRef.current = false;
+      return;
+    }
     e.preventDefault();
+    didDragRef.current = false;
     setFocusedSectionIndex(index);
     setOpen(false);
     router.push(buildContextHref(link.href));

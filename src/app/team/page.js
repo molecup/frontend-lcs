@@ -15,47 +15,19 @@ const companyOverview = {
 
 const teamMembers = [
     {
-        name: "Marta Esposito",
-        role: "Head of Product",
-        bio: "Coordina roadmap e discovery con scuole e partner assicurando esperienze coerenti tra piattaforma e torneo.",
-        tech: ["Next.js", "Notion", "Linear"],
-        initials: "ME",
+        name: "Marco Magnini",
+        role: "Lead Backend Engineer & CTO ",
+        bio: "Gestisce integrazioni e dati dell'intero sito, assicurando coerenza e affidabilità tra tutti i sistemi.",
+        tech: ["Next.js", "Django"],
+        initials: "MM",
     },
     {
-        name: "Luca Ferrero",
-        role: "Lead Engineer",
+        name: "Mario Mottola",
+        role: "Jr Frontend Developer & UX",
         bio: "Guida l'architettura front-end e le integrazioni con calendari, classifiche e sistemi di streaming in tempo reale.",
-        tech: ["React 19", "GSAP", "Supabase"],
-        initials: "LF",
-    },
-    {
-        name: "Giulia Rinaldi",
-        role: "Design & Research",
-        bio: "Trasforma feedback di studenti e docenti in interfacce accessibili e coerenti sul web e sui maxischermi dell'evento.",
-        tech: ["Figma", "Framer", "Storybook"],
-        initials: "GR",
-    },
-    {
-        name: "Samir Khaled",
-        role: "DevOps & Data",
-        bio: "Automatizza pipeline, osservabilità e raccolta dati per fornire insight su ranking, affluenza e engagement delle community.",
-        tech: ["Vercel", "Grafana", "Python"],
-        initials: "SK",
-    },
-    {
-        name: "Elisa Marchetti",
-        role: "Partnership Tech Lead",
-        bio: "Integra i sistemi dei partner (ticketing, sponsor, learning) e garantisce flussi di dati sicuri e conformi.",
-        tech: ["OAuth", "HubSpot", "BigQuery"],
-        initials: "EM",
-    },
-    {
-        name: "Davide Romano",
-        role: "Broadcast & Media Tech",
-        bio: "Sviluppa overlay grafici, automazioni per i contenuti social e supporta la regia durante le dirette streaming.",
-        tech: ["OBS", "Node.js", "After Effects"],
-        initials: "DR",
-    },
+        tech: ["Next.js", "GSAP", "Figma"],
+        initials: "MM",
+    }
 ];
 
 const techStack = [

@@ -150,6 +150,17 @@
     min-height: 280px;
 }
 
+.cityCardLink {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.cityCardDisabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+}
+
 .cityCard::before {
     content: "";
     position: absolute;
@@ -160,6 +171,7 @@
     background: linear-gradient(135deg, rgba(79, 119, 255, 0.1), transparent);
     opacity: 0;
     transition: opacity 0.4s ease;
+    pointer-events: none;
 }
 
 .cityCard:hover {
@@ -177,6 +189,8 @@
     justify-content: space-between;
     align-items: center;
     gap: 8px;
+    position: relative;
+    z-index: 1;
 }
 
 .cardHeader h3 {
@@ -204,6 +218,8 @@
     flex-direction: column;
     gap: 12px;
     opacity: 0.9;
+    position: relative;
+    z-index: 1;
 }
 
 .metaItem {
@@ -247,6 +263,8 @@
 
 .cardFooter {
     margin-top: auto;
+    position: relative;
+    z-index: 1;
 }
 
 .cityLink {
@@ -264,12 +282,19 @@
     border: none;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 237, 175, 0.2);
+    pointer-events: none;
 }
 
 .cityLink:hover {
     transform: translateX(5px);
     box-shadow: 0 8px 25px rgba(0, 237, 175, 0.4);
     filter: brightness(1.1);
+}
+
+.cityLinkDisabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 @media (max-width: 900px) {
