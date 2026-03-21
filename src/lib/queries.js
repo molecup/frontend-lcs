@@ -1,5 +1,5 @@
 const API_URL_BASE = process.env.API_URL_BASE
-
+const REVALIDATE_HOUR = 3600;
 /*
     * Helper functions to fetch data from the API
     * Each function corresponds to a specific endpoint and handles the response
@@ -20,7 +20,8 @@ export async function getLeagueBySlug(slug = null) {
 
 export async function getMatchesByLeagueSlug(leagueSlug = null) {
     const filter = leagueSlug ? "?local-league=" + leagueSlug : "";
-    const response = await fetch(`${API_URL_BASE}/matches/${filter}`, {cache: 'no-store'});
+    console.log(filter);
+    const response = await fetch(`${API_URL_BASE}/matches/${filter}`, {next: { revalidate: REVALIDATE_HOUR }});
     if (!response.ok) {
         console.warn(`Failed to fetch matches: ${response.status}`);
         return null;
@@ -40,7 +41,7 @@ export async function getMatchById(matchId = null) {
 
 export async function getTeamBySlug(teamSlug = null) {
     const slugComponent = teamSlug ? `${teamSlug}/` : '';
-    const response = await fetch(`${API_URL_BASE}/teams/${slugComponent}`, {cache: 'no-store'});
+    const response = await fetch(`${API_URL_BASE}/teams/${slugComponent}`, {next: { revalidate: REVALIDATE_HOUR }});
     if (!response.ok) {
         console.warn(`Failed to fetch team: ${response.status}`);
         return null;
@@ -50,7 +51,7 @@ export async function getTeamBySlug(teamSlug = null) {
 
 export async function getNewsBySlug(slug = null) {
     const slugComponent = slug ? `${slug}/` : '';
-    const response = await fetch(`${API_URL_BASE}/news/${slugComponent}`, {cache: 'no-store'});
+    const response = await fetch(`${API_URL_BASE}/news/${slugComponent}`, {next: { revalidate: REVALIDATE_HOUR/10 }});
     if (!response.ok) {
         console.warn(`Failed to fetch news: ${response.status}`);
         return null;
@@ -60,7 +61,7 @@ export async function getNewsBySlug(slug = null) {
 
 export async function getNewsByLeagueSlug(leagueSlug = null) {
     const filter = leagueSlug ? "?local-league=" + leagueSlug : "";
-    const response = await fetch(`${API_URL_BASE}/news/${filter}`, {cache: 'no-store'});
+    const response = await fetch(`${API_URL_BASE}/news/${filter}`, {next: { revalidate: REVALIDATE_HOUR/10 }});
     if (!response.ok) {
         console.warn(`Failed to fetch news by league: ${response.status}`);
         return null;
