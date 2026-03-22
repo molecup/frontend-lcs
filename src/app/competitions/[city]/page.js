@@ -91,7 +91,7 @@ export default async function CityPage({ params }) {
                                 Trova lo stadio più vicino e ottieni le indicazioni per raggiungerlo facilmente.
                             </p>
                         </div>
-                        <div className={styles.stadiumGrid}>
+                        <div className={`${styles.stadiumGrid} ${stadiums.length === 1 ? styles.stadiumGridSingle : ''}`}>
                             {stadiums.map((stadium) => (
                                 <StadiumMap
                                     key={stadium.id || stadium.name}

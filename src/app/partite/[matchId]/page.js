@@ -44,7 +44,7 @@ export default async function MatchDetailPage({ params }) {
     return (
         <div className={styles['match-detail-page']}>
             <div className={styles['match-detail-header']}>
-                <Link className={styles['back-link']} href="/Partite">
+                <Link className={styles['back-link']} href="/partite">
                     &larr; Torna alle partite
                 </Link>
                 <h1>LCS Match Center</h1>

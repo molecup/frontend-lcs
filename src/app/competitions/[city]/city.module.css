@@ -93,8 +93,15 @@
 
 .stadiumGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 380px));
+    justify-content: center;
     gap: 28px;
+}
+
+@media (min-width: 769px) {
+    .stadiumGridSingle {
+        grid-template-columns: minmax(420px, 820px);
+    }
 }
 
 @media (max-width: 768px) {

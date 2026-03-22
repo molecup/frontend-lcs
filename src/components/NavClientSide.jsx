@@ -107,7 +107,7 @@ export default function NavClientSide({defaultCities}) {
         </div>
       )}
       {/* Mobile: visibile via CSS su viewport < 1200px */}
-      <NavMobile mobileCities={mobileCities} sectionLinks={sectionLinks} />
+      <NavMobile mobileCities={mobileCities} sectionLinks={sectionLinks} mounted={mounted} />
     </nav>
   );
 }

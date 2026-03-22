@@ -84,7 +84,7 @@ export default async function MatchDetailPage({ params }) {
     const match = buildMatchView(rawMatch, nowTs);
     const { shortDate, time } = formatDate(match.date);
     const viewTimeline = match.isLive || match.finished;
-    const backHref = city === MATCH_CENTER_SLUG ? `/Partite` : `/competitions/${city}/partite`;
+    const backHref = city === MATCH_CENTER_SLUG ? `/partite` : `/competitions/${city}/partite`;
 
     return (
         <div className={styles['match-detail-page']}>

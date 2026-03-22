@@ -17,9 +17,9 @@ export default function NavDesktop({ cities, mounted, persistCitiesOrder }) {
 
   // links statici della barra destra con stato per poterli riordinare come le città
   const [navLinks, setNavLinks] = useState([
-    { name: "Classifica", href: "/Classifica", className: undefined },
-    { name: "Squadre", href: "/Squadre", className: "register-btn" },
-    { name: "Partite", href: "/Partite", className: "login-btn" },
+    { name: "Classifica", href: "/classifica", className: undefined },
+    { name: "Squadre", href: "/squadre", className: "register-btn" },
+    { name: "Partite", href: "/partite", className: "login-btn" },
     { name: "Home", href: "/", className: "login-btn" },
   ]);
   const rightLinksRef = useRef(null);

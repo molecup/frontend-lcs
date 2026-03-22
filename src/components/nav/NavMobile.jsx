@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import { useRouter, usePathname } from "next/navigation";
 
-export default function NavMobile({ mobileCities, sectionLinks }) {
+export default function NavMobile({ mobileCities, sectionLinks, mounted = false }) {
   const [open, setOpen] = useState(false);
   const mobileMenuListRef = useRef(null);
   const mobileCitiesPanelRef = useRef(null);
@@ -18,6 +18,7 @@ export default function NavMobile({ mobileCities, sectionLinks }) {
   const scrollEndTimeoutRef = useRef(null);
   const router = useRouter();
   const pathname = usePathname();
+  const effectiveSectionLinks = mounted ? sectionLinks : [];
 
   const extractCitySlug = (value = "") => {
     const normalized = value.startsWith("/") ? value : `/${value}`;
@@ -58,7 +59,7 @@ export default function NavMobile({ mobileCities, sectionLinks }) {
   const [focusedSectionIndex, setFocusedSectionIndex] = useState(() => {
     const sectionFromPath = extractSectionFromPathname(pathname || "");
     if (!sectionFromPath) return 0; // Home di default
-    const matchIndex = sectionLinks.findIndex(
+    const matchIndex = effectiveSectionLinks.findIndex(
       (link) => link.href.replace(/^\//, "").toLowerCase() === sectionFromPath
     );
     return matchIndex >= 0 ? matchIndex : 0;
@@ -85,7 +86,7 @@ export default function NavMobile({ mobileCities, sectionLinks }) {
 
   useEffect(() => {
     const sectionFromPath = extractSectionFromPathname(pathname || "");
-    const matchIndex = sectionLinks.findIndex(
+    const matchIndex = effectiveSectionLinks.findIndex(
       (link) => link.href.replace(/^\//, "").toLowerCase() === sectionFromPath
     );
     if (matchIndex >= 0) {
@@ -94,7 +95,7 @@ export default function NavMobile({ mobileCities, sectionLinks }) {
       // Se siamo sulla home della città, focus su Home (index 0)
       setFocusedSectionIndex(0);
     }
-  }, [pathname, sectionLinks]);
+  }, [pathname, effectiveSectionLinks]);
 
   const focusedCitySlug = useMemo(() => {
     const city = mobileCities[focusedCityIndex];
@@ -405,7 +406,7 @@ export default function NavMobile({ mobileCities, sectionLinks }) {
               ))}
             </ul>
             <ul className="menu-right-list sections" ref={mobileSectionsListRef}>
-              {sectionLinks.map((link, index) => (
+              {effectiveSectionLinks.map((link, index) => (
                 <li key={link.href}>
                   <a href={buildContextHref(link.href)} onClick={(e) => handleMobileSectionClick(e, link, index)}>
                     {link.name}

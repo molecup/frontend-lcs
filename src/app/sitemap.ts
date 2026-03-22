@@ -8,13 +8,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     '',
     '/competitions',
-    '/Partite',
-    '/Squadre',
+    '/partite',
+    '/squadre',
     '/team',
     '/contatti',
     '/privacy',
     '/terms',
-    '/Classifica',
+    '/classifica',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
@@ -81,7 +81,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Nota: Recuperiamo tutti i match per avere gli ID.
   const allMatches = await getMatchesByLeagueSlug();
   const matchPages: MetadataRoute.Sitemap = (allMatches || []).map((match: any) => ({
-    url: `${baseUrl}/Partite/${match.id}`,
+    url: `${baseUrl}/partite/${match.id}`,
     lastModified: new Date(),
     changeFrequency: 'hourly', // I match possono cambiare spesso se live
     priority: 0.5,
