@@ -12,6 +12,30 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/molecup',
+        destination: '/competitions/mole-cup',
+        permanent: true,
+      },
+      {
+        source: '/molecup/team/:teamSlug',
+        destination: '/competitions/mole-cup/squadre/:teamSlug',
+        permanent: true,
+      },
+      {
+        source: '/olympius',
+        destination: '/competitions/olympius-cup',
+        permanent: true,
+      },
+      {
+        source: '/olympius/team/:teamSlug',
+        destination: '/competitions/olympius-cup/squadre/:teamSlug',
+        permanent: true,
+      },
+    ];
+  }
 };
 
 export default nextConfig;
