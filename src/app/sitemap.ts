@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { getLeagueBySlug, getMatchesByLeagueSlug, getNewsByLeagueSlug } from '@/lib/queries';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://legacalciostudenti.com';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://estudentsleague.com';
 
   // 1. Pagine statiche
   const staticPages: MetadataRoute.Sitemap = [
