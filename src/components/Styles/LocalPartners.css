@@ -42,6 +42,16 @@
     gap: 1.5rem;
 }
 
+.local-partners__viewport {
+    overflow: hidden;
+}
+
+.local-partners__track {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
 .local-partner-card {
     display: flex;
     flex-direction: column;
@@ -53,6 +63,7 @@
     text-decoration: none;
     color: inherit;
     transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    cursor: pointer;
 }
 
 .local-partner-card:hover {
@@ -108,18 +119,69 @@
     transform: translateX(4px);
 }
 
+.local-partners__dots {
+    display: none;
+}
+
 @media (max-width: 640px) {
     .local-partners {
-        margin-top: 3rem;
-        padding: 2rem 1.25rem;
+        margin-top: 2.25rem;
+        padding: 1.5rem 0.9rem;
         border-radius: 24px;
     }
 
-    .local-partner-card {
-        text-align: center;
+    .local-partners__header {
+        margin-bottom: 1.2rem;
     }
+
+    .local-partners__title {
+        font-size: clamp(1.4rem, 6vw, 1.9rem);
+    }
+
+    .local-partners__subtitle {
+        font-size: 0.92rem;
+        line-height: 1.45;
+    }
+
+    .local-partners__track {
+        display: flex;
+        gap: 0;
+        transition: transform 0.45s ease;
+        will-change: transform;
+    }
+
     .local-partner-card {
-        align-items: center;
+        flex: 0 0 100%;
+        min-height: 220px;
+        padding: 1.2rem;
+        text-align: left;
+        align-items: flex-start;
+    }
+
+    .local-partner-card:hover {
+        transform: none;
+    }
+
+    .local-partners__dots {
+        margin-top: 0.8rem;
+        display: flex;
+        justify-content: center;
+        gap: 0.4rem;
+    }
+
+    .local-partners__dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        border: 0;
+        padding: 0;
+        background: rgba(255, 255, 255, 0.35);
+        cursor: pointer;
+    }
+
+    .local-partners__dot.is-active {
+        width: 18px;
+        background: rgba(255, 255, 255, 0.95);
     }
 
 }

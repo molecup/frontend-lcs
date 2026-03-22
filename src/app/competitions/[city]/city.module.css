@@ -131,6 +131,11 @@
         height: 120px;
     }
 
+    .cityInfo {
+        padding: 20px 4vw;
+        gap: 18px;
+    }
+
     .bannerContent :global(h1) {
         margin-top: 0 !important;
         position: fixed !important;
@@ -145,7 +150,8 @@
         z-index: 9999 !important;
     }
     .cityInfo {
-        padding: 24px 4vw;
+        padding: 16px 4vw;
+        gap: 14px;
     }
 }
 
