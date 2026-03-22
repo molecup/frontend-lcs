@@ -81,7 +81,7 @@ export default async function CityPage({ params }) {
                 )}
                 <LocalPartners partners={partners} />
                 <SocialLinks socials={socials} />
-                <StaffSection staff={staff} />
+                <StaffSection staff={staff} mode="preview" citySlug={key} />
                 {stadiums.length > 0 && (
                     <section className={styles.stadiumSection}>
                         <div className={styles.stadiumHeader}>

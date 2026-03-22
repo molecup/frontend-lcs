@@ -6,6 +6,7 @@ import TeamsRoster from '@/components/TeamsRoster';
 import AnimatedSectionTitle from '@/components/AnimatedSectionTitle';
 import Standings from '@/components/Standings';
 import NewsSection from '@/components/NewsSection';
+import StaffSection from '@/components/StaffSection';
 import "./section.css";
 import { getLeagueBySlug, getMatchesByLeagueSlug } from '@/lib/queries';
 import {normalizeMatchData} from '@/lib/dataNormalization';
@@ -90,6 +91,7 @@ const leagueSections = (league, matches) => {
     if (mapTeamsForRoster(league).length) sections.add('squadre');
     if (buildGroupsForLeague(league).length) sections.add('classifica');
     if (toArray(league.news).length) sections.add('notizie');
+    if (toArray(league.staff).length) sections.add('staff');
     return sections;
 };
 
@@ -133,6 +135,7 @@ export default async function SectionPage({ params }) {
     const teams = mapTeamsForRoster(league);
     const groups = buildGroupsForLeague(league);
     const news = toArray(league.news);
+    const staff = toArray(league.staff);
 
     const sectionContent = {
         squadre: teams.length ? <TeamsRoster teams={teams} citySlug={slug} /> : null,
@@ -143,7 +146,8 @@ export default async function SectionPage({ params }) {
                 <p className="news-intro">Ultimi aggiornamenti, comunicati e curiosità dal torneo.</p>
                 <NewsSection news={news} />
             </>
-        ) : null
+        ) : null,
+        staff: staff.length ? <StaffSection staff={staff} mode="full" citySlug={slug} /> : null
     }[sectionKey];
 
     if (!sectionContent) {

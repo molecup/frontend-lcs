@@ -34,6 +34,7 @@ const SECTION_LINKS = [
   { name: "Home", href: "/" },
   { name: "Squadre", href: "/squadre" },
   { name: "Classifica", href: "/classifica" },
+  { name: "Staff", href: "/staff" },
   { name: "Partite", href: "/partite" },
 ];
 

@@ -180,6 +180,12 @@
     transform: translateX(3px);
 }
 
+.previewCta {
+    margin-top: 1.25rem;
+    display: flex;
+    justify-content: center;
+}
+
 /* Team Grid */
 .teamGrid {
     display: grid;
@@ -326,6 +332,10 @@
     .joinButton {
         width: 100%;
         justify-content: center;
+    }
+
+    .previewCta {
+        margin-top: 1rem;
     }
 
     .teamGrid {

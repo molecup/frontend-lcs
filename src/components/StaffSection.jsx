@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import styles from './Styles/StaffSection.module.css';
 
 const InstagramIcon = () => (
@@ -28,16 +29,27 @@ const ArrowIcon = () => (
     </svg>
 );
 
-export default function StaffSection({ staff = [] }) {
+export default function StaffSection({ staff = [], mode = 'preview', citySlug = '' }) {
     const [hoveredMember, setHoveredMember] = useState(null);
 
     if (!Array.isArray(staff) || staff.length === 0) {
         return null;
     }
 
-    // Trova il responsabile dello staff
-    const leader = staff.find(member => member.isLeader);
-    const teamMembers = staff.filter(member => !member.isLeader);
+    const normalizeRole = (member) => String(member?.role || '').toLowerCase();
+    const isCoordinator = (member) => member?.isLeader || /coordinatore|responsabile staff/.test(normalizeRole(member));
+    const isPresident = (member) => /co[-\s]?presidente|presidente/.test(normalizeRole(member));
+
+    const coordinator = staff.find(isCoordinator);
+    const presidents = staff.filter((member) => isPresident(member) && member !== coordinator);
+
+    const fallbackLeader = coordinator || presidents[0] || staff[0];
+    const showPreview = mode === 'preview';
+    const staffPath = citySlug ? `/competitions/${citySlug}/staff` : '/team';
+
+    const teamMembers = showPreview
+        ? presidents
+        : staff.filter((member) => member !== fallbackLeader);
 
     const getInstagramUrl = (handle) => {
         if (!handle) return null;
@@ -54,41 +66,41 @@ export default function StaffSection({ staff = [] }) {
                 </p>
             </div>
 
-            {/* Responsabile Staff */}
-            {leader && (
+            {/* Ruolo guida (coordinatore con fallback) */}
+            {fallbackLeader && (
                 <div className={styles.leaderSection}>
                     <div className={styles.leaderCard}>
                         <div className={styles.leaderGlow} />
                         <div className={styles.leaderBadge}>
                             <StarIcon />
-                            <span>Responsabile Staff</span>
+                            <span>{isCoordinator(fallbackLeader) ? 'Coordinatore Staff' : 'Ruolo di riferimento'}</span>
                         </div>
                         <div className={styles.leaderContent}>
                             <div className={styles.leaderAvatar}>
                                 <UserIcon />
                             </div>
                             <div className={styles.leaderInfo}>
-                                <span className={styles.leaderRole}>{leader.role}</span>
-                                {leader.instagram && (
+                                <span className={styles.leaderRole}>{fallbackLeader.role || 'Ruolo da definire'}</span>
+                                {fallbackLeader.instagram && (
                                     <a
-                                        href={getInstagramUrl(leader.instagram)}
+                                        href={getInstagramUrl(fallbackLeader.instagram)}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className={styles.leaderInstagram}
                                     >
                                         <InstagramIcon />
-                                        <span>{leader.instagram}</span>
+                                        <span>{fallbackLeader.instagram}</span>
                                     </a>
                                 )}
                             </div>
                         </div>
                         <div className={styles.joinCta}>
                             <p className={styles.joinText}>
-                                Vuoi entrare a far parte dello staff? Contatta il responsabile!
+                                Vuoi entrare a far parte dello staff? Contatta il referente principale!
                             </p>
-                            {leader.instagram && (
+                            {fallbackLeader.instagram && (
                                 <a
-                                    href={getInstagramUrl(leader.instagram)}
+                                    href={getInstagramUrl(fallbackLeader.instagram)}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className={styles.joinButton}
@@ -102,7 +114,7 @@ export default function StaffSection({ staff = [] }) {
                 </div>
             )}
 
-            {/* Membri dello Staff */}
+            {/* Presidente / Co-presidente in preview, tutti i membri in full */}
             {teamMembers.length > 0 && (
                 <div className={styles.teamGrid}>
                     {teamMembers.map((member, index) => (
@@ -132,6 +144,15 @@ export default function StaffSection({ staff = [] }) {
                             </div>
                         </div>
                     ))}
+                </div>
+            )}
+
+            {showPreview && citySlug && (
+                <div className={styles.previewCta}>
+                    <Link href={staffPath} className={styles.joinButton}>
+                        Vedi tutto lo staff
+                        <ArrowIcon />
+                    </Link>
                 </div>
             )}
         </section>
