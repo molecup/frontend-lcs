@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 // import { localleagues } from '@/data/CorrectDataStructure';
 import AnimatedTitle from '@/components/AnimatedTitle';
@@ -53,6 +54,23 @@ export default async function CityPage({ params }) {
     const data = await getLeagueBySlug(key);
     if (!data) notFound();
 
+    const cityBasePath = `/competitions/${key}`;
+
+    const quickLinks = [
+        {
+            href: `${cityBasePath}/partite`,
+            title: 'Partite',
+        },
+        {
+            href: `${cityBasePath}/classifica`,
+            title: 'Classifica',
+        },
+        {
+            href: `${cityBasePath}/squadre`,
+            title: 'Squadre',
+        }
+    ];
+
     const news = Array.isArray(data.news) ? data.news : [];
     const hasNews = news.length > 0;
     const partners = Array.isArray(data.partners) ? data.partners : [];
@@ -73,6 +91,15 @@ export default async function CityPage({ params }) {
                 </div>
             </div>
             <div className={styles.cityInfo}>
+                <section className={styles.quickNav} aria-label="Navigazione rapida">
+                    <div className={styles.quickNavGrid}>
+                        {quickLinks.map((item) => (
+                            <Link key={item.href} href={item.href} className={styles.quickNavCard}>
+                                <span className={styles.quickNavTitle}>{item.title}</span>
+                            </Link>
+                        ))}
+                    </div>
+                </section>
                 {/*{hasNews && (*/}
                 {/*    <CityScrollNews items={news} durationMs={4000} />*/}
                 {/*)}*/}

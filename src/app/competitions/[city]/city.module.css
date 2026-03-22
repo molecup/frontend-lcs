@@ -52,6 +52,51 @@
     gap: 24px;
 }
 
+.quickNav {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.quickNavGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(180px, 1fr));
+    gap: 12px;
+    min-width: 600px;
+}
+
+.quickNavCard {
+    min-height: 64px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    text-decoration: none;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quickNavCard:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+}
+
+.quickNavCard:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+}
+
+.quickNavTitle {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
 .stadiumSection {
     display: flex;
     flex-direction: column;
@@ -133,6 +178,13 @@
     }
 }
 
+@media (max-width: 1024px) {
+    .quickNavGrid {
+        grid-template-columns: repeat(3, minmax(170px, 1fr));
+        min-width: 540px;
+    }
+}
+
 @media (max-width: 640px) {
     .banner {
         height: 120px;
@@ -141,6 +193,17 @@
     .cityInfo {
         padding: 20px 4vw;
         gap: 18px;
+    }
+
+    .quickNavGrid {
+        grid-template-columns: repeat(3, minmax(150px, 1fr));
+        min-width: 480px;
+        gap: 10px;
+    }
+
+    .quickNavCard {
+        min-height: 56px;
+        padding: 10px 12px;
     }
 
     .bannerContent :global(h1) {
@@ -161,4 +224,3 @@
         gap: 14px;
     }
 }
-
