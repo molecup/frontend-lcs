@@ -34,6 +34,11 @@ const nextConfig = {
         destination: '/competitions/olympius-cup/squadre/:teamSlug',
         permanent: true,
       },
+      {
+        source: '/regolamento',
+        destination: '/squadre',
+        permanent: true,
+      }
     ];
   }
 };
