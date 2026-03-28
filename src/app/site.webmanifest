@@ -1,6 +1,6 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "Lega Calcio Studenti",
+  "short_name": "LCS",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
