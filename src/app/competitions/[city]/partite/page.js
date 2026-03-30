@@ -1,3 +1,4 @@
+export const revalidate = 3600; // 1 hour
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import AnimatedTitle from '@/components/AnimatedTitle';

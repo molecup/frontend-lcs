@@ -1,3 +1,4 @@
+export const revalidate = 3600; // 1 hour
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -43,14 +44,14 @@ const MATCH_CENTER_LEAGUE = { slug: MATCH_CENTER_SLUG, title: 'LCS Match Center'
 
 
 
-export async function generateStaticParams() {
-    const localleagues = await getLeagueBySlug();
-    const leagueParams = localleagues.flatMap(async (league) =>
-        (await getMatchesByLeagueSlug(league.slug)).map((match) => ({ city: league.slug, matchId: String(match.id) }))
-    );
-    const matchCenterParams = (eslMatches || []).map((match) => ({ city: MATCH_CENTER_SLUG, matchId: String(match.id) }));
-    return [...leagueParams, ...matchCenterParams];
-}
+// export async function generateStaticParams() {
+//     const localleagues = await getLeagueBySlug();
+//     const leagueParams = localleagues.flatMap(async (league) =>
+//         (await getMatchesByLeagueSlug(league.slug)).map((match) => ({ city: league.slug, matchId: String(match.id) }))
+//     );
+//     const matchCenterParams = (eslMatches || []).map((match) => ({ city: MATCH_CENTER_SLUG, matchId: String(match.id) }));
+//     return [...leagueParams, ...matchCenterParams];
+// }
 
 export async function generateMetadata({ params }) {
     const resolvedParams = await params;

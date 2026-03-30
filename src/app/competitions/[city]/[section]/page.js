@@ -1,3 +1,4 @@
+export const revalidate = 3600; // 1 hour
 // javascript
 import { notFound, redirect } from 'next/navigation';
 // import { localleagues, matches as allMatches } from '@/data/CorrectDataStructure';
