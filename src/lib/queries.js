@@ -10,7 +10,7 @@ const REVALIDATE_HOUR = 3600;
 
 export async function getLeagueBySlug(slug = null) {
     const slugComponent = slug? `${slug}/` : '';
-    const response = await fetch(`${API_URL_BASE}/local-leagues/${slugComponent}`);
+    const response = await fetch(`${API_URL_BASE}/local-leagues/${slugComponent}`, {next: { revalidate: REVALIDATE_HOUR }});
     if (!response.ok) {
         console.warn(`Failed to fetch league: ${response.status}`);
         return null;
