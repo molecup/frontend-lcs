@@ -1,5 +1,6 @@
 const API_URL_BASE = process.env.API_URL_BASE
 const REVALIDATE_HOUR = 3600;
+const LIVE_SORTEGGIO_URL = 'https://api.m8lapi.tech/live.json';
 /*
     * Helper functions to fetch data from the API
     * Each function corresponds to a specific endpoint and handles the response
@@ -68,3 +69,13 @@ export async function getNewsByLeagueSlug(leagueSlug = null) {
     }
     return await response.json();
 }
+
+export async function getLiveDrawStatus() {
+    const response = await fetch(LIVE_SORTEGGIO_URL, { cache: 'no-store' });
+    if (!response.ok) {
+        console.warn(`Failed to fetch live draw status: ${response.status}`);
+        return null;
+    }
+    return await response.json();
+}
+

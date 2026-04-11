@@ -1,0 +1,110 @@
+.drawPage {
+    gap: 1.25rem;
+}
+
+.sectionBlock {
+    border-radius: 24px;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.backLink {
+    text-decoration: none;
+    color: var(--text);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+    padding: 0.6rem 1rem;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.backLink:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.backLink:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+}
+
+.skeletonBlock {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    padding: 1rem;
+    display: grid;
+    gap: 0.65rem;
+}
+
+.skeletonTitle,
+.skeletonLine,
+.skeletonLineShort,
+.skeletonCard {
+    border-radius: 10px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
+    background-size: 220% 100%;
+    animation: shimmer 1.4s linear infinite;
+}
+
+.skeletonTitle {
+    width: 40%;
+    height: 26px;
+}
+
+.skeletonLine {
+    width: 100%;
+    height: 14px;
+}
+
+.skeletonLineShort {
+    width: 60%;
+    height: 14px;
+}
+
+.skeletonGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.7rem;
+}
+
+.skeletonCard {
+    height: 92px;
+}
+
+.errorTitle {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--text);
+}
+
+.errorText {
+    margin: 0.5rem 0 0;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.retryButton {
+    margin-top: 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.55rem 1rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.retryButton:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: -100% 0;
+    }
+}
+

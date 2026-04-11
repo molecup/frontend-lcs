@@ -2,12 +2,12 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 // import { localleagues } from '@/data/CorrectDataStructure';
 import AnimatedTitle from '@/components/AnimatedTitle';
-import CityScrollNews from '@/components/CityScrollNews';
 import BlogSlider from '@/components/BlogSlider';
 import LocalPartners from '@/components/LocalPartners';
 import StadiumMap from '@/components/StadiumMap';
 import SocialLinks from '@/components/SocialLinks';
 import StaffSection from '@/components/StaffSection';
+import MatchDrawCard from '@/components/MatchDrawCard';
 // import { getSortedPostsData } from '@/lib/blog';
 import styles from './city.module.css';
 import {getLeagueBySlug, getNewsByLeagueSlug} from '@/lib/queries';
@@ -16,18 +16,6 @@ import {getLeagueBySlug, getNewsByLeagueSlug} from '@/lib/queries';
 //     if (league?.slug) acc[league.slug.toLowerCase()] = league;
 //     return acc;
 // }, {});
-
-const cityBackgrounds = {
-    boracup: '/backgroundCities/boracup.jpg',
-    ferreacup: '/backgroundCities/ferreacup.jpg',
-    leonessacup: '/backgroundCities/leonessacup.jpg',
-    milano: '/backgroundCities/milano.png',
-    molecup: '/backgroundCities/molecup.jpg',
-    olympiuscup: '/backgroundCities/olympiuscup.jpg',
-    turascup: '/backgroundCities/turascup.jpg',
-};
-
-const getBackgroundForCity = (slug) => cityBackgrounds[slug?.toLowerCase()] || '/backgroundCities/milano.png';
 
 export const dynamicParams = true;
 
@@ -71,8 +59,6 @@ export default async function CityPage({ params }) {
         }
     ];
 
-    const news = Array.isArray(data.news) ? data.news : [];
-    const hasNews = news.length > 0;
     const partners = Array.isArray(data.partners) ? data.partners : [];
     const stadiums = Array.isArray(data.stadiums) ? data.stadiums : [];
     const socials = data.socials || {};
@@ -100,6 +86,11 @@ export default async function CityPage({ params }) {
                         ))}
                     </div>
                 </section>
+                <MatchDrawCard
+                    href={`${cityBasePath}/sorteggio`}
+                    title="Sorteggio Match"
+                    description="Accedi alla sezione dedicata al sorteggio e consulta la struttura degli accoppiamenti."
+                />
                 {/*{hasNews && (*/}
                 {/*    <CityScrollNews items={news} durationMs={4000} />*/}
                 {/*)}*/}

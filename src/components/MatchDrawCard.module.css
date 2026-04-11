@@ -1,0 +1,70 @@
+.wrapper {
+    width: 100%;
+}
+
+.card {
+    display: block;
+    text-decoration: none;
+    color: var(--text);
+    border-radius: 24px;
+    padding: clamp(1rem, 2.4vw, 1.75rem);
+    border: 2px solid color-mix(in srgb, var(--aux) 55%, white 20%);
+    background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--secondary) 60%, transparent), transparent 50%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.32);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--aux) 85%, white 10%);
+    box-shadow: 0 20px 44px rgba(0, 0, 0, 0.42);
+}
+
+.card:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    padding: 0.28rem 0.7rem;
+    margin-bottom: 0.9rem;
+    background: rgba(0, 0, 0, 0.22);
+}
+
+.title {
+    margin: 0 0 0.45rem;
+    font-size: clamp(1.25rem, 2.8vw, 1.9rem);
+    line-height: 1.15;
+}
+
+.description {
+    margin: 0;
+    max-width: 65ch;
+    color: rgba(255, 255, 255, 0.86);
+    line-height: 1.5;
+}
+
+.cta {
+    display: inline-flex;
+    margin-top: 1rem;
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+@media (max-width: 640px) {
+    .card {
+        border-radius: 18px;
+    }
+}
+
