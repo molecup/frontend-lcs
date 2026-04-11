@@ -1,4 +1,4 @@
-export const revalidate = 3600; // 1 hour
+export const dynamic = 'force-dynamic';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import AnimatedTitle from '@/components/AnimatedTitle';
@@ -9,7 +9,11 @@ import { normalizeMatchData, findLiveMatch } from '@/lib/dataNormalization';
 import '../[section]/section.css';
 import styles from './partite.module.css';
 
-const toArray = (value) => (Array.isArray(value) ? value : []);
+const toArray = (value) => {
+    if (Array.isArray(value)) return value;
+    if (Array.isArray(value?.results)) return value.results;
+    return [];
+};
 
 const findLatestPlayedMatch = (matches) => {
     const now = Date.now();
@@ -113,4 +117,3 @@ export default async function CityMatchesPage({ params }) {
         </div>
     );
 }
-

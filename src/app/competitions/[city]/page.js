@@ -68,6 +68,7 @@ export default async function CityPage({ params }) {
     const blogPosts = await getNewsByLeagueSlug(key);
     const hasBlog = blogPosts.length > 0;
     const backgroundImage = data.background || '/backgroundCities/milano.png';
+    const showMatchDrawCard = key === 'leonessa-cup';
 
     return (
         <div className={styles.cityPage}>
@@ -86,11 +87,13 @@ export default async function CityPage({ params }) {
                         ))}
                     </div>
                 </section>
-                <MatchDrawCard
-                    href={`${cityBasePath}/sorteggio`}
-                    title="Sorteggio Match"
-                    description="Accedi alla sezione dedicata al sorteggio e consulta la struttura degli accoppiamenti."
-                />
+                {showMatchDrawCard && (
+                    <MatchDrawCard
+                        href={`${cityBasePath}/sorteggio`}
+                        title="Sorteggio Match"
+                        description="Accedi alla sezione dedicata al sorteggio e consulta la struttura degli accoppiamenti."
+                    />
+                )}
                 {/*{hasNews && (*/}
                 {/*    <CityScrollNews items={news} durationMs={4000} />*/}
                 {/*)}*/}

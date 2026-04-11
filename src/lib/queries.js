@@ -22,13 +22,13 @@ export async function getLeagueBySlug(slug = null) {
 export async function getMatchesByLeagueSlug(leagueSlug = null) {
     const filter = leagueSlug ? "?local-league=" + leagueSlug : "";
     console.log(filter);
-    const response = await fetch(`${API_URL_BASE}/matches/${filter}`, {next: { revalidate: REVALIDATE_HOUR }});
+    const response = await fetch(`${API_URL_BASE}/matches/${filter}`, {next: { cache: 'no-store' }});
     if (!response.ok) {
         console.warn(`Failed to fetch matches: ${response.status}`);
         return null;
     }
     return await response.json();
-} 
+}
 
 export async function getMatchById(matchId = null) {
     const slugComponent = matchId ? `${matchId}/` : '';

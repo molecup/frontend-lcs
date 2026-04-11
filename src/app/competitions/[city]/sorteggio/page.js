@@ -9,6 +9,14 @@ import { normalizeMatchData } from '@/lib/dataNormalization';
 import '../[section]/section.css';
 import styles from './sorteggio.module.css';
 
+export const dynamic = 'force-dynamic';
+
+const toMatchesArray = (payload) => {
+    if (Array.isArray(payload)) return payload;
+    if (Array.isArray(payload?.results)) return payload.results;
+    return [];
+};
+
 export async function generateMetadata({ params }) {
     const { city } = await params;
     const slug = city?.toLowerCase?.() ?? '';
@@ -58,10 +66,12 @@ export default async function CityMatchDrawPage({ params }) {
 
     try {
         const rawMatches = await getMatchesByLeagueSlug(slug);
-        if (Array.isArray(rawMatches)) {
-            matches = rawMatches.map(normalizeMatchData);
-        } else {
+        const safeMatches = toMatchesArray(rawMatches);
+
+        if (rawMatches == null) {
             hasApiError = true;
+        } else {
+            matches = safeMatches.map(normalizeMatchData);
         }
     } catch {
         hasApiError = true;
@@ -105,4 +115,3 @@ export default async function CityMatchDrawPage({ params }) {
         </div>
     );
 }
-
