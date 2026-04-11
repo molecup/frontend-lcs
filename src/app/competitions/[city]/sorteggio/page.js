@@ -6,6 +6,7 @@ import MatchDrawLiveHero from '@/components/MatchDrawLiveHero';
 import MatchDrawMatchesList from '@/components/MatchDrawMatchesList';
 import { getLeagueBySlug, getLiveDrawStatus, getMatchesByLeagueSlug } from '@/lib/queries';
 import { normalizeMatchData } from '@/lib/dataNormalization';
+import LiveRefreshClient from './LiveRefreshClient';
 import '../[section]/section.css';
 import styles from './sorteggio.module.css';
 
@@ -86,6 +87,7 @@ export default async function CityMatchDrawPage({ params }) {
             </div>
 
             <div className={`city-section ${styles.drawPage}`}>
+                <LiveRefreshClient isLive={isLive} />
                 <MatchDrawLiveHero
                     leagueName={leagueName}
                     isLive={isLive}
