@@ -74,7 +74,7 @@ export default async function CityPage({ params }) {
     return (
         <div className={styles.cityPage}>
             <div className={styles.banner}>
-                <Image src={backgroundImage} alt={`${data.name} background`} fill className={styles.bannerImage} priority />
+                <Image src={backgroundImage} alt={`${data.name} background`} fill className={styles.bannerImage} priority sizes='100vw' />
                 <div className={styles.bannerContent}>
                     <AnimatedTitle text={data.name || data.title}/>
                 </div>

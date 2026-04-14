@@ -162,7 +162,7 @@ export default async function SectionPage({ params }) {
     return (
         <div className="city-page">
             <div className="banner">
-                <Image src={backgroundImage} alt={`${league.name} background`} fill className="banner-image" priority />
+                <Image src={backgroundImage} alt={`${league.name} background`} fill className="banner-image" priority sizes='100vw' />
                 <div className="banner-content">
                     <AnimatedTitle text={league.name || league.title} />
                 </div>

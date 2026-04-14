@@ -2,6 +2,7 @@
 import React, { useMemo } from "react";
 import Link from "next/link";
 import EmptyState from "./EmptyState";
+import Image from "next/image";
 
 const DEFAULT_POINT_SYSTEM = { win: 3, win_p: 2, loss_p: 1, loss: 0 };
 const createBaseStats = (team = {}) => ({
@@ -254,7 +255,7 @@ export default function Standings({ groups = [], matches = [], pointSystem = DEF
                         <div className="logo">
                           {team.logo ? (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={team.logo} alt={`logo ${team.name}`} loading="lazy" />
+                            <Image src={team.logo} alt={`logo ${team.name}`} loading="lazy" width="90" height="90" />
                           ) : (
                             <div className="placeholder" aria-hidden="true" />
                           )}
