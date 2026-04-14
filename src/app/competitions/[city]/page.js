@@ -11,6 +11,7 @@ import MatchDrawCard from '@/components/MatchDrawCard';
 // import { getSortedPostsData } from '@/lib/blog';
 import styles from './city.module.css';
 import {getLeagueBySlug, getNewsByLeagueSlug} from '@/lib/queries';
+import Image from 'next/image';
 
 // const leaguesBySlug = localleagues.reduce((acc, league) => {
 //     if (league?.slug) acc[league.slug.toLowerCase()] = league;
@@ -72,7 +73,8 @@ export default async function CityPage({ params }) {
 
     return (
         <div className={styles.cityPage}>
-            <div className={styles.banner} style={{ backgroundImage: `url(${backgroundImage})` }}>
+            <div className={styles.banner}>
+                <Image src={backgroundImage} alt={`${data.name} background`} fill className={styles.bannerImage} priority />
                 <div className={styles.bannerContent}>
                     <AnimatedTitle text={data.name || data.title}/>
                 </div>

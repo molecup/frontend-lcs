@@ -11,6 +11,7 @@ import StaffSection from '@/components/StaffSection';
 import "./section.css";
 import { getLeagueBySlug, getMatchesByLeagueSlug } from '@/lib/queries';
 import {normalizeMatchData} from '@/lib/dataNormalization';
+import Image from 'next/image';
 
 const DEFAULT_LOGO = '/logoCities/lcsw.png';
 const toArray = (value) => (Array.isArray(value) ? value : []);
@@ -160,7 +161,8 @@ export default async function SectionPage({ params }) {
 
     return (
         <div className="city-page">
-            <div className="banner" style={{ backgroundImage: `url(${backgroundImage})` }}>
+            <div className="banner">
+                <Image src={backgroundImage} alt={`${league.name} background`} fill className="banner-image" priority />
                 <div className="banner-content">
                     <AnimatedTitle text={league.name || league.title} />
                 </div>
