@@ -21,7 +21,7 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-image: url("../../../../../public/backgroundCities/milano.png");
+    background-image: none;
     overflow: hidden;
     position: relative;
 }
