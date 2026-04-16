@@ -503,6 +503,13 @@
     text-overflow: ellipsis;
 }
 
+.city-page .standings-row .team-info .short-name {
+    display: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .city-page .standings-row .col.pos {
     display: flex;
     justify-content: center;
@@ -550,6 +557,14 @@
     .city-page .standings-row {
         grid-template-columns: 30px 1fr repeat(8, 36px);
     }
+
+    .city-page .standings-row .team-info .short-name {
+        display: block;
+    }
+
+    .city-page .standings-row .team-info .name {
+        display: none;
+    }
 }
 
 @media (max-width: 600px) {
@@ -577,6 +592,12 @@
     .city-page .standings-row .col.wr,
     .city-page .standings-row .col.lr,
     .city-page .standings-row .col.l {
+        display: none;
+    }
+}
+
+@media (max-width: 320px){
+    .city-page .standings-row .team-info .short-name {
         display: none;
     }
 }

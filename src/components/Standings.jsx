@@ -47,9 +47,11 @@ const isMatchCompleted = (match) => {
 const normalizeSide = (side, fallbackId) => {
   const base = side?.team ?? side ?? {};
   const rawId = base.id ?? base.slug ?? base.name ?? side?.id ?? fallbackId;
+  console.log("Normalizing side:", { side, base, rawId });
   return {
     id: rawId?.toString() ?? fallbackId,
     name: base.name ?? side?.name ?? "Squadra",
+    shortName: base.short_name ?? side?.short_name ?? base.name ?? side?.name ?? "Squadra",
     logo: base.logo ?? side?.logo ?? null,
     slug: base.slug,
     groupId: side?.groupId ?? base.local_league ?? base.groupId ?? null,
@@ -82,7 +84,7 @@ const normalizeTeamsFromMatch = (match, matchIdx) => {
 };
 const updateTeamEntry = (teamMap, side, opponent, pointSystem) => {
   const key = side.id ?? `team-${teamMap.size + 1}`;
-  const entry = teamMap.get(key) ?? createBaseStats({ id: key, name: side.name, logo: side.logo, slug: side.slug });
+  const entry = teamMap.get(key) ?? createBaseStats({ id: key, name: side.name, shortName: side.shortName, logo: side.logo, slug: side.slug });
   entry.p += 1;
   entry.gf += side.score;
   entry.ga += opponent.score;
@@ -260,6 +262,7 @@ export default function Standings({ groups = [], matches = [], pointSystem = DEF
                           )}
                         </div>
                         <div className="name" title={team.name}>{team.name}</div>
+                        <div className="short-name" title={team.shortName}>{team.shortName}</div>
                       </div>
                     </div>
 
