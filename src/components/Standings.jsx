@@ -23,9 +23,11 @@ const sortTeams = (teams = []) =>
     .map((team) => ({ ...team, gd: (team.gf ?? 0) - (team.ga ?? 0) }))
     .sort(
       (a, b) =>
+        ((b.w ?? 0) + (b.w_p ?? 0)) - ((a.w ?? 0) + (a.w_p ?? 0)) ||
         (b.pts ?? 0) - (a.pts ?? 0) ||
         (b.gd ?? 0) - (a.gd ?? 0) ||
         (b.gf ?? 0) - (a.gf ?? 0) ||
+        (a.p ?? 0) - (b.p ?? 0) ||
         (a.name || "").localeCompare(b.name || "")
     );
 const prettifyGroupName = (value, fallback) => {
@@ -210,20 +212,17 @@ export default function Standings({ groups = [], matches = [], pointSystem = DEF
                 <div className="col team" role="columnheader">
                   Squadra
                 </div>
-                <div className="col p" role="columnheader" title="Partite">
-                  P
+                <div className="col p" role="columnheader" title="Partite giocate">
+                  PG
                 </div>
-                <div className="col w" role="columnheader" title="Vinte">
-                  V
+                <div className="col w-l" role="columnheader" title="Vinte/Perse">
+                  W/L
                 </div>
                 <div className="col wr" role="columnheader" title="Vinte ai rigori">
-                  VR
+                  W(R)
                 </div>
                 <div className="col lr" role="columnheader" title="Perse ai rigori">
-                  PR
-                </div>
-                <div className="col l" role="columnheader" title="Perse">
-                  P
+                  L(R)
                 </div>
                 <div className="col gf" role="columnheader" title="Gol fatti">
                   GF
@@ -245,7 +244,7 @@ export default function Standings({ groups = [], matches = [], pointSystem = DEF
                 const rowCells = (
                   <>
                     <div className="col pos" role="cell">
-                      <span className={`badge ${idx === 0 ? "gold" : idx === 1 ? "silver" : idx === 2 ? "bronze" : ""}`}>
+                      <span className={`badge ${idx === 0 ? "gold" : idx === 1 ? "silver" : idx === 2 || idx === 3 ? "bronze" : ""}`}>
                         {idx + 1}
                       </span>
                     </div>
@@ -265,10 +264,9 @@ export default function Standings({ groups = [], matches = [], pointSystem = DEF
                     </div>
 
                     <div className="col p" role="cell">{team.p ?? 0}</div>
-                    <div className="col w" role="cell">{team.w ?? 0}</div>
+                    <div className="col w-l" role="cell">{`${(team.w_p ?? 0) + (team.w ?? 0)} / ${(team.l_p ?? 0) + (team.l ?? 0)}`}</div>
                     <div className="col wr" role="cell">{team.w_p ?? 0}</div>
                     <div className="col lr" role="cell">{team.l_p ?? 0}</div>
-                    <div className="col l" role="cell">{team.l ?? 0}</div>
                     <div className="col gf" role="cell">{team.gf ?? 0}</div>
                     <div className="col ga" role="cell">{team.ga ?? 0}</div>
                     <div className="col gd" role="cell">{team.gd ?? (team.gf ?? 0) - (team.ga ?? 0)}</div>
