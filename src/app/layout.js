@@ -8,6 +8,9 @@ export default function RootLayout({ children }) {
         <html lang="it" >
         <head>
             <title>estudentsleague</title>
+            <link rel="preconnect" href="https://use.typekit.net" />
+            <link rel="preconnect" href="https://maps.gstatic.com" />
+            <link rel="preconnect" href="https://django-backend-lcs-storage.s3.amazonaws.com" />
             <meta name="description" content="estudentsleague"/>
             <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
             <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
