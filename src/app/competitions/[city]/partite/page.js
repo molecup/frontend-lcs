@@ -8,6 +8,7 @@ import { getLeagueBySlug, getMatchesByLeagueSlug } from '@/lib/queries';
 import { normalizeMatchData, findLiveMatch } from '@/lib/dataNormalization';
 import '../[section]/section.css';
 import styles from './partite.module.css';
+import Image from 'next/image';
 
 const toArray = (value) => {
     if (Array.isArray(value)) return value;
@@ -58,7 +59,15 @@ export default async function CityMatchesPage({ params }) {
 
     return (
         <div className="city-page">
-            <div className="banner" style={{ backgroundImage: `url(${backgroundImage})` }}>
+            <div className="banner">
+                <Image
+                    src={backgroundImage}
+                    alt={`${league.name || league.title} background`}
+                    fill
+                    className="banner-image"
+                    priority
+                    sizes="100vw"
+                />
                 <div className="banner-content">
                     <AnimatedTitle text={`${league.name || league.title} · Partite`} />
                 </div>

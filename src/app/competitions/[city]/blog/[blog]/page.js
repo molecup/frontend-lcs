@@ -4,6 +4,7 @@ import styles from './blog.module.css';
 import { getNewsBySlug } from '@/lib/queries';
 import { remark } from 'remark';
 import html from 'remark-html';
+import Image from 'next/image';
 
 export default async function BlogPostPage({ params }) {
     const resolvedParams = await params;
@@ -57,9 +58,12 @@ export default async function BlogPostPage({ params }) {
                         </div>
                         {postData.image && (
                             <div className={styles.heroMedia}>
-                                <img
+                                <Image
                                     src={postData.image}
                                     alt={postData.title}
+                                    sizes="(max-width: 1024px) 100vw, 33vw"
+                                    width={800}
+                                    height={450}
                                     loading="lazy"
                                     decoding="async"
                                 />

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import NavDesktop from "./nav/NavDesktop.jsx";
 import NavMobile from "./nav/NavMobile.jsx";
 import { useCitiesNav, DEFAULT_NAV_LOGO } from "./nav/useCitiesNav.js";
+import Image from "next/image";
 
 
 export default function NavClientSide({defaultCities}) {
@@ -78,12 +79,14 @@ export default function NavClientSide({defaultCities}) {
   return (
     <nav className={navHidden ? "nav-hidden" : undefined} suppressHydrationWarning>
       <a href="/" className="logo" aria-label={`Vai alla home di ${navLogoLabel}`} suppressHydrationWarning>
-        <img
+        <Image
           src={navLogoSrc}
           alt={`Logo ${navLogoLabel}`}
           className="logo-img"
           loading="lazy"
           suppressHydrationWarning
+          fill
+          sizes="(max-width: 600px) 40px, (max-width: 1200px) 60px, 80px"
         />
       </a>
       {/* Desktop: visibile via CSS su viewport >= 1200px */}
