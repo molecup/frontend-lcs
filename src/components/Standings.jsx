@@ -47,7 +47,6 @@ const isMatchCompleted = (match) => {
 const normalizeSide = (side, fallbackId) => {
   const base = side?.team ?? side ?? {};
   const rawId = base.id ?? base.slug ?? base.name ?? side?.id ?? fallbackId;
-  console.log("Normalizing side:", { side, base, rawId });
   return {
     id: rawId?.toString() ?? fallbackId,
     name: base.name ?? side?.name ?? "Squadra",
