@@ -103,7 +103,7 @@ export default async function Page() {
                     <div className={"div-content"}>
                         <div className={"div-content-text"}>
                             <h2>Chi siamo</h2>
-                            <p>Lega Calcio Studenti (LCS) e una lega studentesca nata con l&#39;obiettivo di valorizzare lo sport nel contesto scolastico, incentivando i licei a supportare i propri atleti e proponendo ai partecipanti nuove opportunita accademiche e didattiche.</p>
+                            <p>Lega Calcio Studenti (LCS) è una lega studentesca nata con l&#39;obiettivo di valorizzare lo sport nel contesto scolastico, incentivando i licei a supportare i propri atleti e proponendo ai partecipanti nuove opportunita accademiche e didattiche.</p>
                             <Link href="/competitions" className="btn-cta">Scopri di piu</Link>
                         </div>
                         <figure className="div-image parallax" data-speed="0.2">
