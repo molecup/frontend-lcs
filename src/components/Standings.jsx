@@ -28,7 +28,7 @@ const sortTeams = (teams = []) =>
         (b.gd ?? 0) - (a.gd ?? 0) ||
         (b.gf ?? 0) - (a.gf ?? 0) ||
         (a.p ?? 0) - (b.p ?? 0) ||
-        (a.name || "").localeCompare(b.name || "")
+        (b.name || "").localeCompare(a.name || "")
     );
 const prettifyGroupName = (value, fallback) => {
   if (!value) return fallback;
