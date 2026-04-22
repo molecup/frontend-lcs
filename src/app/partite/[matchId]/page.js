@@ -28,6 +28,14 @@ export async function generateMetadata({ params }) {
     };
 }
 
+function printPlayer(player){
+    if (!player) return " ";
+    const shirt = player.shirt_number ? `${player.shirt_number}` : '';
+    const name = player.first_name && player.last_name ? `${player.first_name[0]}. ${player.last_name}` : '';
+    const div = shirt && name ? ' - ' : '';
+    return `${shirt}${div}${name}`.trim() || ' ';
+}
+
 export default async function MatchDetailPage({ params }) {
     const resolvedParams = await params;
     const { matchId } = resolvedParams;
@@ -90,7 +98,7 @@ export default async function MatchDetailPage({ params }) {
                             <li key={`${event.minute}-${idx}`}>
                                 <span className={styles['minute']}>{event.minute}&rsquo;</span>
                                 <span className={styles['type']}>{event.type}</span>
-                                <span className={styles['player']}>{event.player}</span>
+                                <span className={styles['player']}>{printPlayer(event.player)}</span>
                                 {event.team && <span className={styles['team']}>({event.team})</span>}
                             </li>
                         ))}

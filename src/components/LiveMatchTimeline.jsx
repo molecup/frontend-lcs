@@ -16,6 +16,15 @@ import styles from './Styles/LiveMatchTimeline.module.css';
  * - Team-based side alignment (left/right).
  * - Visual connectors (dot + line).
  */
+
+export function printPlayer(player){
+    if (!player) return " ";
+    const shirt = player.shirt_number ? `${player.shirt_number}` : '';
+    const name = player.first_name && player.last_name ? `${player.first_name[0]}. ${player.last_name}` : '';
+    const div = shirt && name ? ' - ' : '';
+    return `${shirt}${div}${name}`.trim() || ' ';
+}
+
 export default function LiveMatchTimeline({ match }) {
   const MATCH_DURATION = 50;
 
@@ -170,7 +179,7 @@ export default function LiveMatchTimeline({ match }) {
                     const isHome = event.team === homeName;
                     const sideClass = isHome ? styles['lt-v-left'] : styles['lt-v-right'];
                     const verticalOffset = ((idx + 0.5) / events.length) * 100;
-
+                    console.log(event)
                     return (
                       <div
                         key={idx}
@@ -181,7 +190,7 @@ export default function LiveMatchTimeline({ match }) {
                         <div className={styles['lt-v-connector-line']} />
                         <div className={styles['lt-v-event-details']}>
                           <span className={styles['lt-v-type-icon']}>{iconFor(event.type)}</span>
-                          <span className={styles['lt-v-player']}>{event.player}</span>
+                          <span className={styles['lt-v-player']}>{printPlayer(event.player)}</span>
                         </div>
                       </div>
                     );
