@@ -118,6 +118,8 @@ const aggregateMatchesByGroup = (matches = [], pointSystem = DEFAULT_POINT_SYSTE
     if (!isMatchCompleted(match)) return;
     const teams = normalizeTeamsFromMatch(match, matchIdx);
     if (!teams) return;
+    if (teams.length < 2) return;
+    if (match.stage && match.stage.toLowerCase().localeCompare("gironi") !== 0) return;
 
     const [home, away] = teams;
     const groupIdRaw =
