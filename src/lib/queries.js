@@ -32,7 +32,7 @@ export async function getMatchesByLeagueSlug(leagueSlug = null) {
 
 export async function getMatchById(matchId = null) {
     const slugComponent = matchId ? `${matchId}/` : '';
-    const response = await fetch(`${API_URL_BASE}/matches/${slugComponent}`, {cache: 'no-store'});
+    const response = await fetch(`${API_URL_BASE}/matches/${slugComponent}`, {next: { revalidate: REVALIDATE_HOUR/10 }});
     if (!response.ok) {
         console.warn(`Failed to fetch match: ${response.status}`);
         return null;
