@@ -22,7 +22,7 @@ export async function getLeagueBySlug(slug = null) {
 export async function getMatchesByLeagueSlug(leagueSlug = null) {
     const filter = leagueSlug ? "?local-league=" + leagueSlug : "";
     console.log(filter);
-    const response = await fetch(`${API_URL_BASE}/matches/${filter}`, {next: { cache: 'no-store' }});
+    const response = await fetch(`${API_URL_BASE}/matches/${filter}`, {next: { revalidate: REVALIDATE_HOUR/10 }});
     if (!response.ok) {
         console.warn(`Failed to fetch matches: ${response.status}`);
         return null;
