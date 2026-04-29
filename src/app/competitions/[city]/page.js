@@ -69,7 +69,7 @@ export default async function CityPage({ params }) {
     const blogPosts = await getNewsByLeagueSlug(key);
     const hasBlog = blogPosts.length > 0;
     const backgroundImage = data.background || '/backgroundCities/milano.png';
-    const showMatchDrawCard = key === 'leonessa-cup';
+    const showMatchDrawCard = key === 'nessuna';
 
     return (
         <div className={styles.cityPage}>
