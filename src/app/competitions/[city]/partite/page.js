@@ -36,7 +36,7 @@ export async function generateMetadata({ params }) {
     }
 
     return {
-        title: `${league.title || league.name} - Partite`,
+        title: `${league.title || league.name}`,
         description: `Calendario e risultati per ${league.title || league.name}.`
     };
 }
@@ -70,7 +70,7 @@ export default async function CityMatchesPage({ params }) {
                     sizes="100vw"
                 />
                 <div className="banner-content">
-                    <AnimatedTitle text={`${league.name || league.title} · Partite`} />
+                    <AnimatedTitle text={`${league.name || league.title}`} />
                 </div>
             </div>
 
