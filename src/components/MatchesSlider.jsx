@@ -150,19 +150,22 @@ export default function MatchesSlider({ matches = [], citySlug }) {
 
   // Utilità per formattare data/ora su ogni card
   const formatDateTime = (date) => {
-    const shortDate = date
+    const fullDate = date
       ? date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })
+      : '';
+    const compactDate = date
+      ? date.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: '2-digit' })
       : '';
     const time = date
       ? date.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
       : '';
-    return { shortDate, time };
+    return { fullDate, compactDate, time };
   };
 
   const visibleItems = useMemo(() => {
     return sortedMatches.map((m) => {
       const date = m.date ? new Date(m.date) : null;
-      const { shortDate, time } = formatDateTime(date);
+      const { fullDate, compactDate, time } = formatDateTime(date);
       const start = date ? date.getTime() : null;
       const now = Date.now();
       const diffMin = start != null ? Math.floor((now - start) / 60000) : null;
@@ -176,9 +179,12 @@ export default function MatchesSlider({ matches = [], citySlug }) {
         : undefined;
 
       return (
-        <Link key={m.id || `${shortDate}-${time}`} href={matchHref || '#'} className="match-card" ref={setCardRef} aria-label={`Dettaglio partita ${m.home?.name || ''} contro ${m.away?.name || ''}`}>
+        <Link key={m.id || `${fullDate}-${time}`} href={matchHref || '#'} className="match-card" ref={setCardRef} aria-label={`Dettaglio partita ${m.home?.name || ''} contro ${m.away?.name || ''}`}>
           <div className="match-header">
-            <span className="match-date" aria-label="Data partita">{shortDate}{time ? ` • ${time}` : ''}</span>
+            <span className="match-date" aria-label="Data partita">
+              <span className="match-date-desktop">{fullDate}{time ? ` • ${time}` : ''}</span>
+              <span className="match-date-mobile">{compactDate}{time ? ` - ${time}` : ''}</span>
+            </span>
             <div className="match-meta-right">
               {m.stage && <span className="match-stage">{m.stage}</span>}
               {liveNow && (
@@ -219,12 +225,19 @@ export default function MatchesSlider({ matches = [], citySlug }) {
     });
   }, [sortedMatches, normalizedCity]);
 
+  const hasMultipleMatches = sortedMatches.length > 1;
+
   return (
     <section className="matches-section">
       <div className="matches-controls">
         <button type="button" className="nav-btn prev" aria-label="Scorri a sinistra" onClick={() => scrollByAmount(-1)}>‹</button>
         <button type="button" className="nav-btn next" aria-label="Scorri a destra" onClick={() => scrollByAmount(1)}>›</button>
       </div>
+      {hasMultipleMatches && (
+        <p className="matches-swipe-hint" aria-hidden="true">
+          Scorri per vedere le altre partite
+        </p>
+      )}
       <div ref={scrollerRef} className="matches-scroller">
         {visibleItems}
       </div>

@@ -108,3 +108,8 @@
     background-color: color-mix(in srgb, var(--secondary) 75%, var(--text) 10%);
 }
 
+@media (max-width: 768px) {
+    .sectionHeader {
+        display: none;
+    }
+}
