@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AccreditationStatus {
+  unused
+  used_saturday
+  used_sunday
+}
+
+model Weekend {
+  id           String          @id @default(cuid())
+  key          String          @unique
+  startDate    DateTime
+  endDate      DateTime
+  maxCapacity  Int
+  createdAt    DateTime        @default(now())
+  accreditations Accreditation[]
+}
+
+model Accreditation {
+  id             String             @id @default(cuid())
+  weekendId      String
+  weekend        Weekend            @relation(fields: [weekendId], references: [id])
+  fullName       String
+  phone          String
+  email          String
+  school         String?
+  status         AccreditationStatus @default(unused)
+  qrTokenHash    String             @unique
+  marketingOptIn Boolean            @default(false)
+  privacyConsent Boolean            @default(false)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@unique([weekendId, email])
+  @@unique([weekendId, phone])
+}
+

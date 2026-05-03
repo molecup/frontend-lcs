@@ -1,0 +1,54 @@
+.wrapper {
+  display: grid;
+  gap: 16px;
+}
+
+.cameraBox {
+  background: #0f172a;
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.video {
+  width: 100%;
+  border-radius: 12px;
+  background: #0b1220;
+}
+
+.manualForm {
+  display: flex;
+  gap: 12px;
+}
+
+.manualForm input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+}
+
+.manualForm button {
+  border: none;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: #38bdf8;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.result {
+  padding: 16px;
+  border-radius: 16px;
+  color: #0f172a;
+  display: grid;
+  gap: 4px;
+}
+
+.valid {
+  background: #4ade80;
+}
+
+.invalid {
+  background: #f87171;
+}
+

@@ -46,7 +46,6 @@ export default async function MatchDetailPage({ params }) {
     const nowTs = Date.now();
     const match = buildMatchView(rawMatch, nowTs);
     const { shortDate, time } = formatDate(match.date);
-    console.log(rawMatch, match);
     const viewTimeline = match.isLive || match.finished;
 
     return (

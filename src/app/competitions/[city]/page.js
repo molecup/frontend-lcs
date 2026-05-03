@@ -60,6 +60,13 @@ export default async function CityPage({ params }) {
         }
     ];
 
+    if (key === 'leonessacup') {
+        quickLinks.push({
+            href: `${cityBasePath}/accrediti`,
+            title: 'Accrediti'
+        });
+    }
+
     const partners = Array.isArray(data.partners) ? data.partners : [];
     const stadiums = Array.isArray(data.stadiums) ? data.stadiums : [];
     const socials = data.socials || {};

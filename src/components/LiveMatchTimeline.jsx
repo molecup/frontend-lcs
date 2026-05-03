@@ -179,7 +179,6 @@ export default function LiveMatchTimeline({ match }) {
                     const isHome = event.team === homeName;
                     const sideClass = isHome ? styles['lt-v-left'] : styles['lt-v-right'];
                     const verticalOffset = ((idx + 0.5) / events.length) * 100;
-                    console.log(event)
                     return (
                       <div
                         key={idx}

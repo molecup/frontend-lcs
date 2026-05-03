@@ -18,7 +18,6 @@ export const metadata = {
 
 export default async function PartitePage() {
     const matches = [];
-    console.log(matches);
     // const matches = (await getMatchById()).map(normalizeMatchData);
     const liveMatch = findLiveMatch(matches);
     const bannerTitle = `${MATCH_CENTER_TITLE} · ${MATCH_CENTER_TAGLINE}`;

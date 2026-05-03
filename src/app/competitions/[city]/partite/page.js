@@ -51,7 +51,6 @@ export default async function CityMatchesPage({ params }) {
     }
 
     const matches = toArray(await getMatchesByLeagueSlug(slug)).map(normalizeMatchData);
-    console.log(matches);
     const liveMatch = findLiveMatch(matches);
     const latestPlayedMatch = findLatestPlayedMatch(matches);
     const timelineMatch = liveMatch || latestPlayedMatch;
