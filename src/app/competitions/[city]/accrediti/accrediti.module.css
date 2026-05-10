@@ -1,36 +1,18 @@
 .page {
   display: grid;
-  gap: 24px;
-  padding: 150px 6vw 64px;
-  grid-template-columns: minmax(0, 1fr) 280px;
+  place-items: center;
+  min-height: calc(100vh - 220px);
+  padding: 150px 6vw 96px;
 }
 
 .formArea {
+  width: min(100%, 980px);
   min-width: 0;
-}
-
-.adsArea {
-  display: grid;
-  gap: 16px;
-  align-content: start;
-}
-
-.adSlot {
-  min-height: 180px;
-  border-radius: 18px;
-  border: 1px dashed #94a3b8;
-  display: grid;
-  place-items: center;
-  color: #64748b;
-  font-weight: 600;
 }
 
 @media (max-width: 960px) {
   .page {
-    grid-template-columns: 1fr;
-  }
-
-  .adsArea {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    min-height: auto;
+    padding: 120px 5vw 80px;
   }
 }

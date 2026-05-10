@@ -7,8 +7,9 @@ import styles from './accrediti.module.css';
 export const dynamic = 'force-dynamic';
 
 export default async function AccreditiPage({ params }) {
-  const { city } = params;
-  const key = city.toLowerCase();
+  const { city } = await params;
+  const rawKey = city.toLowerCase();
+  const key = rawKey === 'leonessa-cup' ? 'leonessacup' : rawKey;
   if (key !== 'leonessacup') notFound();
 
   const supabase = getSupabaseAdmin();
@@ -40,11 +41,6 @@ export default async function AccreditiPage({ params }) {
       <div className={styles.formArea}>
         <AccreditiForm initialStatus={initialStatus} />
       </div>
-      <aside className={styles.adsArea} aria-label="Banner sponsor">
-        <div className={styles.adSlot}>Banner Sponsor 1</div>
-        <div className={styles.adSlot}>Banner Sponsor 2</div>
-      </aside>
     </main>
   );
 }
-

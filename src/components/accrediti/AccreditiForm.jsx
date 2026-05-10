@@ -17,6 +17,7 @@ export default function AccreditiForm({ initialStatus }) {
   const [qrDataUrl, setQrDataUrl] = useState(null);
   const [pdfData, setPdfData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     const refresh = async () => {
@@ -60,6 +61,7 @@ export default function AccreditiForm({ initialStatus }) {
     setMessage(data.message);
     setQrDataUrl(data.qrDataUrl);
     setPdfData({ base64: data.pdfBase64, fileName: data.pdfFileName });
+    setSubmitted(true);
     setStatus((prev) => ({
       ...(prev ?? {}),
       remaining: data.remaining,
@@ -102,7 +104,7 @@ export default function AccreditiForm({ initialStatus }) {
         </div>
       )}
 
-      {status?.isOpen && (
+      {status?.isOpen && !submitted && (
         <form className={styles.form} onSubmit={onSubmit}>
           <div className={styles.grid}>
             <label>

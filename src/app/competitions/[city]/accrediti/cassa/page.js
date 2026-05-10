@@ -11,8 +11,9 @@ import styles from './staff.module.css';
 export const dynamic = 'force-dynamic';
 
 export default async function AccreditiCassaPage({ params }) {
-  const { city } = params;
-  const key = city.toLowerCase();
+  const { city } = await params;
+  const rawKey = city.toLowerCase();
+  const key = rawKey === 'leonessa-cup' ? 'leonessacup' : rawKey;
   if (key !== 'leonessacup') notFound();
 
   const cookieStore = cookies();
@@ -65,4 +66,3 @@ export default async function AccreditiCassaPage({ params }) {
     </main>
   );
 }
-

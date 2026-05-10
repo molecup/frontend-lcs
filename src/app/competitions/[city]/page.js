@@ -8,7 +8,7 @@ import StadiumMap from '@/components/StadiumMap';
 import SocialLinks from '@/components/SocialLinks';
 import StaffSection from '@/components/StaffSection';
 import MatchDrawCard from '@/components/MatchDrawCard';
-// import { getSortedPostsData } from '@/lib/blog';
+import AccreditiInfoCard from '@/components/AccreditiInfoCard';
 import styles from './city.module.css';
 import {getLeagueBySlug, getNewsByLeagueSlug} from '@/lib/queries';
 import Image from 'next/image';
@@ -60,13 +60,6 @@ export default async function CityPage({ params }) {
         }
     ];
 
-    if (key === 'leonessacup') {
-        quickLinks.push({
-            href: `${cityBasePath}/accrediti`,
-            title: 'Accrediti'
-        });
-    }
-
     const partners = Array.isArray(data.partners) ? data.partners : [];
     const stadiums = Array.isArray(data.stadiums) ? data.stadiums : [];
     const socials = data.socials || {};
@@ -96,6 +89,9 @@ export default async function CityPage({ params }) {
                         ))}
                     </div>
                 </section>
+                {(key === 'leonessacup' || key === 'leonessa-cup') && (
+                    <AccreditiInfoCard href={`${cityBasePath}/accrediti`} />
+                )}
                 {showMatchDrawCard && (
                     <MatchDrawCard
                         href={`${cityBasePath}/sorteggio`}
