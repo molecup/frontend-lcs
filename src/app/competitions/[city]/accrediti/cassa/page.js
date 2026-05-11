@@ -16,7 +16,7 @@ export default async function AccreditiCassaPage({ params }) {
   const key = rawKey === 'leonessa-cup' ? 'leonessacup' : rawKey;
   if (key !== 'leonessacup') notFound();
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const authenticated = isStaffAuthenticated(cookieStore);
 
   if (!authenticated) {
