@@ -1,6 +1,74 @@
 const API_URL_BASE = process.env.API_URL_BASE
 const REVALIDATE_HOUR = 3600;
 const LIVE_SORTEGGIO_URL = 'https://api.m8lapi.tech/live.json';
+const GOAL_EVENT_TYPE = 'GOAL';
+
+const isGoalEvent = (event) => {
+    const rawType = event?.event_type ?? event?.type ?? '';
+    return String(rawType).toUpperCase() === GOAL_EVENT_TYPE;
+};
+
+const toSafeText = (value, fallback) => {
+    if (typeof value === 'string') return value;
+    if (value == null) return fallback;
+    return String(value);
+};
+
+const toPlayerName = (player) => {
+    if (typeof player === 'string') return player.trim() || null;
+    if (!player || typeof player !== 'object') return null;
+
+    const fullName = [player.first_name, player.last_name]
+        .filter((part) => typeof part === 'string' && part.trim())
+        .join(' ')
+        .trim();
+
+    if (fullName) return fullName;
+    if (typeof player.name === 'string' && player.name.trim()) return player.name.trim();
+
+    return null;
+};
+
+const toScorerKey = (player, team) => `${player}__${team}`;
+
+const buildTopScorers = (matches = [], limit = 3) => {
+    const scorersMap = new Map();
+
+    matches.forEach((match) => {
+        if (Array.isArray(match?.teams) && match.teams.length) {
+            match.teams.forEach((teamEntry) => {
+                const teamName = toSafeText(teamEntry?.team?.name || teamEntry?.team?.short_name, '');
+                (teamEntry?.events || []).forEach((event) => {
+                    if (!isGoalEvent(event)) return;
+                    const playerName = toPlayerName(event?.player);
+                    if (!playerName) return;
+                    const key = toScorerKey(playerName, teamName);
+                    const current = scorersMap.get(key) || { player: playerName, team: teamName, goals: 0 };
+                    current.goals += 1;
+                    scorersMap.set(key, current);
+                });
+            });
+            return;
+        }
+
+        if (Array.isArray(match?.events)) {
+            match.events.forEach((event) => {
+                if (!isGoalEvent(event)) return;
+                const playerName = toPlayerName(event?.player);
+                if (!playerName) return;
+                const teamName = toSafeText(event?.team, '');
+                const key = toScorerKey(playerName, teamName);
+                const current = scorersMap.get(key) || { player: playerName, team: teamName, goals: 0 };
+                current.goals += 1;
+                scorersMap.set(key, current);
+            });
+        }
+    });
+
+    return Array.from(scorersMap.values())
+        .sort((a, b) => (b.goals - a.goals) || a.player.localeCompare(b.player) || a.team.localeCompare(b.team))
+        .slice(0, Math.max(0, limit));
+};
 /*
     * Helper functions to fetch data from the API
     * Each function corresponds to a specific endpoint and handles the response
@@ -78,3 +146,31 @@ export async function getLiveDrawStatus() {
     return await response.json();
 }
 
+export async function getTopScorersByLeagueSlug(leagueSlug, limit = 3) {
+    if (!leagueSlug) return [];
+    const matches = await getMatchesByLeagueSlug(leagueSlug);
+    if (!Array.isArray(matches)) return [];
+    return buildTopScorers(matches, limit);
+}
+
+export async function getTopScorersByLeague(limit = 3) {
+    const leagues = await getLeagueBySlug();
+    if (!Array.isArray(leagues) || leagues.length === 0) return [];
+
+    const results = await Promise.all(
+        leagues.map(async (league) => {
+            const slug = league?.slug;
+            if (!slug) return null;
+            const scorers = await getTopScorersByLeagueSlug(slug, limit);
+            return {
+                league: {
+                    slug,
+                    name: league?.name || league?.title || slug
+                },
+                scorers
+            };
+        })
+    );
+
+    return results.filter(Boolean);
+}

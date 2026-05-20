@@ -10,7 +10,7 @@ import StaffSection from '@/components/StaffSection';
 import MatchDrawCard from '@/components/MatchDrawCard';
 import AccreditiInfoCard from '@/components/AccreditiInfoCard';
 import styles from './city.module.css';
-import {getLeagueBySlug, getNewsByLeagueSlug} from '@/lib/queries';
+import {getLeagueBySlug, getNewsByLeagueSlug, getTopScorersByLeagueSlug} from '@/lib/queries';
 import Image from 'next/image';
 
 // const leaguesBySlug = localleagues.reduce((acc, league) => {
@@ -68,6 +68,8 @@ export default async function CityPage({ params }) {
     // const blogPosts = getSortedPostsData(city);
     const blogPosts = await getNewsByLeagueSlug(key);
     const hasBlog = blogPosts.length > 0;
+    const topScorers = await getTopScorersByLeagueSlug(key, 3);
+    const hasTopScorers = topScorers.length > 0;
     const backgroundImage = data.background || '/backgroundCities/milano.png';
     const showMatchDrawCard = key === 'nessuna';
 
@@ -89,21 +91,43 @@ export default async function CityPage({ params }) {
                         ))}
                     </div>
                 </section>
-                {(key === 'leonessacup' || key === 'leonessa-cup') && (
-                    <AccreditiInfoCard href={`${cityBasePath}/accrediti`} />
-                )}
-                {showMatchDrawCard && (
-                    <MatchDrawCard
-                        href={`${cityBasePath}/sorteggio`}
-                        title="Sorteggio Match"
-                        description="Accedi alla sezione dedicata al sorteggio e consulta la struttura degli accoppiamenti."
-                    />
-                )}
+                {/*{(key === 'leonessacup' || key === 'leonessa-cup') && (*/}
+                {/*    <AccreditiInfoCard href={`${cityBasePath}/accrediti`} />*/}
+                {/*)}*/}
+                {/*{showMatchDrawCard && (*/}
+                {/*    <MatchDrawCard*/}
+                {/*        href={`${cityBasePath}/sorteggio`}*/}
+                {/*        title="Sorteggio Match"*/}
+                {/*        description="Accedi alla sezione dedicata al sorteggio e consulta la struttura degli accoppiamenti."*/}
+                {/*    />*/}
+                {/*)}*/}
                 {/*{hasNews && (*/}
                 {/*    <CityScrollNews items={news} durationMs={4000} />*/}
                 {/*)}*/}
                 {hasBlog && (
                     <BlogSlider items={blogPosts} city={city} durationMs={5000} />
+                )}
+                {hasTopScorers && (
+                    <section className={styles.topScorersSection} aria-label="Capocannonieri">
+                        <div className={styles.topScorersHeader}>
+                            <p className={styles.topScorersEyebrow}>Classifica marcatori</p>
+                            <h2 className={styles.topScorersTitle}>I migliori 3 capocannonieri</h2>
+                            <p className={styles.topScorersSubtitle}>Scopri chi sta facendo la differenza in questa lega.</p>
+                        </div>
+                        <div className={styles.topScorersGrid}>
+                            {topScorers.map((scorer, index) => (
+                                <article key={`${scorer.player}-${scorer.team}-${index}`} className={styles.scorerCard}>
+                                    <div className={styles.scorerRank}>#{index + 1}</div>
+                                    <h3 className={styles.scorerName}>{scorer.player}</h3>
+                                    <p className={styles.scorerMeta}>{scorer.team || 'Squadra non disponibile'}</p>
+                                    <div className={styles.scorerGoals}>
+                                        <span className={styles.scorerGoalsValue}>{scorer.goals}</span>
+                                        <span className={styles.scorerGoalsLabel}>gol</span>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    </section>
                 )}
                 <LocalPartners partners={partners} />
                 <SocialLinks socials={socials} />

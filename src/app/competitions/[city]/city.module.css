@@ -233,3 +233,117 @@
         gap: 14px;
     }
 }
+
+.topScorersSection {
+    margin-top: 2.5rem;
+    padding: 2.5rem 2rem;
+    border-radius: 28px;
+    background: linear-gradient(145deg, rgba(20, 20, 35, 0.92), rgba(10, 10, 18, 0.8));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.4);
+}
+
+.topScorersHeader {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 2rem;
+}
+
+.topScorersEyebrow {
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.35rem;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 0.75rem;
+}
+
+.topScorersTitle {
+    font-size: clamp(1.7rem, 3vw, 2.6rem);
+    margin: 0 0 0.5rem;
+    color: var(--text);
+}
+
+.topScorersSubtitle {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.topScorersGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+.scorerCard {
+    position: relative;
+    padding: 1.5rem 1.4rem;
+    border-radius: 20px;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+}
+
+.scorerCard::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top, rgba(255, 255, 255, 0.18), transparent 65%);
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.scorerRank {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.15rem;
+}
+
+.scorerName {
+    margin: 0.6rem 0 0.35rem;
+    font-size: 1.35rem;
+    color: var(--text);
+}
+
+.scorerMeta {
+    margin: 0 0 1rem;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.95rem;
+}
+
+.scorerGoals {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.scorerGoalsValue {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.scorerGoalsLabel {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 768px) {
+    .topScorersSection {
+        padding: 2rem 1.25rem;
+        border-radius: 22px;
+    }
+
+    .topScorersGrid {
+        grid-template-columns: 1fr;
+    }
+}
