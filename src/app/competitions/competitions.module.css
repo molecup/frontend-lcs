@@ -297,6 +297,133 @@
     pointer-events: none;
 }
 
+.homeStandings {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.homeStandingsHeader {
+    text-align: center;
+}
+
+.homeStandingsHeader h2 {
+    margin: 12px 0 6px;
+    font-size: clamp(28px, 4vw, 40px);
+    font-family: var(--font), sans-serif;
+}
+
+.homeStandingsHeader p {
+    max-width: 720px;
+    margin: 0 auto;
+    opacity: 0.85;
+}
+
+.homeStandingsCard {
+    padding: clamp(16px, 2vw, 24px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: radial-gradient(circle at top left, rgba(79, 119, 255, 0.18), rgba(6, 8, 18, 0.92));
+    box-shadow: 0 30px 60px rgba(6, 8, 18, 0.4);
+}
+
+.homeStandingsTable {
+    border-radius: 18px;
+    background: radial-gradient(circle at top left, rgba(79, 119, 255, 0.18), rgba(6, 8, 18, 0.92));
+}
+
+.homeStandingsRow {
+    display: grid;
+    grid-template-columns: 36px minmax(180px, 1fr) repeat(3, minmax(60px, 90px));
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.7rem;
+    color: #f5f7ff;
+}
+
+.homeStandingsRowHead {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    letter-spacing: 0.35px;
+}
+
+.homeStandingsRowBody {
+    font-size: 0.95rem;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.homeStandingsRowBody + .homeStandingsRowBody {
+    border-top: 1px dashed rgba(255, 255, 255, 0.05);
+}
+
+.homeStandingsRowBody:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-2px);
+}
+
+.homeStandingsRowTop {
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0));
+}
+
+.homeStandingsCol,
+.homeStandingsColTeam,
+.homeStandingsColPos {
+    min-width: 0;
+}
+
+.homeStandingsColPos {
+    display: flex;
+    justify-content: center;
+}
+
+.homeStandingsColTeam {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.homeStandingsBadge {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.homeStandingsBadgeGold {
+    background: linear-gradient(180deg, #4a3a00, #271f00);
+    border-color: #7c6200;
+    color: #ffe790;
+}
+
+.homeStandingsBadgeSilver {
+    background: linear-gradient(180deg, #3b3b3b, #1f1f1f);
+    border-color: #808080;
+    color: #f2f2f2;
+}
+
+.homeStandingsBadgeBronze {
+    background: linear-gradient(180deg, #4b2e1c, #2a160a);
+    border-color: #8a5a3b;
+    color: #f1c2a0;
+}
+
+@media (max-width: 720px) {
+    .homeStandingsRow {
+        grid-template-columns: 30px minmax(140px, 1fr) repeat(2, minmax(60px, 90px));
+    }
+
+    .homeStandingsRow .homeStandingsCol:last-child,
+    .homeStandingsRowHead .homeStandingsCol:last-child {
+        display: none;
+    }
+}
+
 @media (max-width: 900px) {
     .cityGrid {
         grid-template-columns: 1fr;

@@ -9,6 +9,7 @@ const STAGE_CONFIG = [
     { label: "Finale", matchCount: 1 }
 ];
 
+
 const buildBracketRounds = () => {
     let cursor = 0;
     return STAGE_CONFIG.map(({ label, matchCount }) => {

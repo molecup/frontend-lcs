@@ -27,6 +27,23 @@ const formatHighlights = [
     }
 ];
 
+const homeStandings = [
+    { name: "Lunardi", record: "3-0", pts: 9, gd: "+12" },
+    { name: "Barozzi", record: "3-0", pts: 9, gd: "+7" },
+    { name: "Leonardo", record: "3-0", pts: 9, gd: "+6" },
+    { name: "Aselli", record: "3-0", pts: 9, gd: "+4" },
+    { name: "Cattaneo", record: "3-0", pts: 9, gd: "+4" },
+    { name: "Luzzago", record: "3-0", pts: 8, gd: "+19" },
+    { name: "Curie Levi", record: "3-0", pts: 8, gd: "+15" },
+    { name: "Galfer", record: "3-0", pts: 8, gd: "+7" },
+    { name: "Calvesi Baracca", record: "3-0", pts: 8, gd: "+7" },
+    { name: "Valsalice", record: "3-0", pts: 8, gd: "+5" },
+    { name: "Brera", record: "3-0", pts: 8, gd: "+5" },
+    { name: "Santanna", record: "3-0", pts: 8, gd: "+4" },
+    { name: "Corni", record: "3-0", pts: 8, gd: "+4" },
+    { name: "Alfieri", record: "3-0", pts: 8, gd: "+2" }
+];
+
 const toArray = (value) => (Array.isArray(value) ? value : []);
 const resolveLeagueSlug = (league) => {
     const raw = league?.slug;
@@ -172,6 +189,44 @@ export default async function Page() {
                             <div className={"desc"}></div>
                         </li>
                     </ul>
+                </SectionReveal>
+
+                <SectionReveal title="Classifica generale" align="center">
+                    <div className={styles.homeStandings}>
+                        <header className={styles.homeStandingsHeader}>
+                            <p className={styles.eyebrow}>Classifica</p>
+                            <h2>Top squadre del momento</h2>
+                            <p>Graduatoria aggiornata con i risultati piu recenti.</p>
+                        </header>
+                        <div className={styles.homeStandingsCard}>
+                            <div className={styles.homeStandingsTable} role="table">
+                                <div className={`${styles.homeStandingsRow} ${styles.homeStandingsRowHead}`} role="row">
+                                    <div className={styles.homeStandingsColPos} role="columnheader">#</div>
+                                    <div className={styles.homeStandingsColTeam} role="columnheader">Squadra</div>
+                                    <div className={styles.homeStandingsCol} role="columnheader">Record</div>
+                                    <div className={styles.homeStandingsCol} role="columnheader">Pt</div>
+                                    <div className={styles.homeStandingsCol} role="columnheader">DR</div>
+                                </div>
+                                {homeStandings.map((team, idx) => (
+                                    <div
+                                        key={`${team.name}-${idx}`}
+                                        className={`${styles.homeStandingsRow} ${styles.homeStandingsRowBody} ${idx < 3 ? styles.homeStandingsRowTop : ""}`}
+                                        role="row"
+                                    >
+                                        <div className={styles.homeStandingsColPos} role="cell">
+                                            <span className={`${styles.homeStandingsBadge} ${idx === 0 ? styles.homeStandingsBadgeGold : idx === 1 ? styles.homeStandingsBadgeSilver : idx === 2 ? styles.homeStandingsBadgeBronze : ""}`}>
+                                                {idx + 1}
+                                            </span>
+                                        </div>
+                                        <div className={styles.homeStandingsColTeam} role="cell">{team.name}</div>
+                                        <div className={styles.homeStandingsCol} role="cell">{team.record}</div>
+                                        <div className={styles.homeStandingsCol} role="cell">{team.pts}</div>
+                                        <div className={styles.homeStandingsCol} role="cell">{team.gd}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
                 </SectionReveal>
 
                 <SectionReveal title="" align="left">
