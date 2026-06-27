@@ -111,7 +111,9 @@ export default function ContattiPage() {
                 </div>
             </section>
 
-            <section className={styles.cardsSection}>
+            
+
+            {/* <section className={styles.cardsSection}>
                 {infoCards.map((card) => (
                     <article key={card.id} className={styles.infoCard}>
                         <div>
@@ -124,9 +126,22 @@ export default function ContattiPage() {
                         </a>
                     </article>
                 ))}
-            </section>
+            </section> */}
 
-            <section className={styles.formSection}>
+            <div className={styles.formEmbed}>
+                <iframe
+                    src="https://docs.google.com/forms/d/e/1FAIpQLScNWqQ3QV8cgTX0M8B7f7FyLgq54Z3arMdbZ-pKHXlzfE8Jbw/viewform?embedded=true"
+                    title="Modulo di contatto Google Forms"
+                    height="2077"
+                    frameBorder="0"
+                    marginHeight="0"
+                    marginWidth="0"
+                >
+                    Caricamento…
+                </iframe>
+            </div>
+
+            {/* <section className={styles.formSection}>
                 <div>
                     <p className={styles.eyebrow}>Scrivici ora</p>
                     <h2>Invia un messaggio al team LCS</h2>
@@ -178,7 +193,7 @@ export default function ContattiPage() {
                     {status === "submitted" && <p className={styles.success}>Stiamo aprendo il tuo client email...</p>}
                     {status === "error" && <p className={styles.error}>Controlla i campi evidenziati e riprova.</p>}
                 </form>
-            </section>
+            </section>  */}
         </main>
     );
 }
