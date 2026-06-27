@@ -132,7 +132,7 @@ export default function ContattiPage() {
                 <iframe
                     src="https://docs.google.com/forms/d/e/1FAIpQLScNWqQ3QV8cgTX0M8B7f7FyLgq54Z3arMdbZ-pKHXlzfE8Jbw/viewform?embedded=true"
                     title="Modulo di contatto Google Forms"
-                    height="2077"
+                    height="2200"
                     frameBorder="0"
                     marginHeight="0"
                     marginWidth="0"
